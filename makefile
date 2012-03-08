@@ -1,6 +1,6 @@
 AUTHOR = onesuper
 VERSION = 1.0
-
+DEBUG = -g
 
 
 #**************************************
@@ -12,8 +12,8 @@ naive:	naive/naive
 
 
 #*****************************************
-naive/naive: naive/main.cc naive/bfs.cc
-	g++ naive/main.cc naive/bfs.cc -o naive/naive -Wall
+naive/naive: naive/main.cc
+	g++ naive/main.cc -o naive/naive -Wall $(DEBUG)
 
 #*****************************************
 

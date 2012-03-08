@@ -8,7 +8,8 @@ a naive/sequential implementation of breadth-first search.
 ***********************************************************************/
 
 #include <stdio.h>
-#include "naive.h"
+#include "./../graph/graph.h"
+#include "bfs.cc"
 
 int main(int argc, char** argv)
 {
@@ -19,5 +20,7 @@ int main(int argc, char** argv)
 	 graph_read_and_alloc(argv[1]);
 	 //graph_watch();
 	 bfs();
+
+	 gen_log();
 	 return 0;
 }

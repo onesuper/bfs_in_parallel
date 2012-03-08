@@ -14,29 +14,46 @@ the dest variable of each edge in edges array points out
 the node it connecting to.
 ************************************************************************/
 
+#define WHITE	0				/* not visited */
+#define GREY	1				/* visiting */
+#define BLACK	2				/* visited */
+#define INF		2147483647		/* inifinity is  2^31 - 1  */
+#define MAX_LEVEL		20000	
+
 typedef struct node_t 
 {
 	 unsigned int start;		/* starting index of edges */
 	 unsigned int edge_num;
-}Node;
+} Node;
 
 typedef struct edge_t
 {
 	 unsigned int dest;			/* index of nodes */
 	 unsigned int cost;
- }Edge;
+ } Edge;
 
+/********************************************
+global variables 
+*********************************************/
 
-FILE *fp;
 Node* node_list;
 Edge* edge_list;
+int* color;
+int* cost;
+int* counter;
 unsigned int num_of_nodes;
 unsigned int num_of_edges;
 unsigned int source_node_no;
 
+/********************************************/
 #include "alloc.cc"
-	 
 		  
-	 
-		  
+extern void graph_read_and_alloc(char*);
+extern void graph_watch(void);
+extern void graph_free(void);
+
+#include "util.cc"
+
+extern void gen_log(void);
+
 	 
