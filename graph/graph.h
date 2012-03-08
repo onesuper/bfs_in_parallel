@@ -46,13 +46,13 @@ unsigned int num_of_edges;
 unsigned int source_node_no;
 
 /********************************************/
-#include "alloc.cc"
+#include "alloc.cpp"
 		  
 extern void graph_read_and_alloc(char*);
 extern void graph_watch(void);
 extern void graph_free(void);
 
-#include "util.cc"
+#include "util.cpp"
 
 extern void gen_log(void);
 
