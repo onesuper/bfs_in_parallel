@@ -28,13 +28,13 @@ typedef struct edge_t
 
 
 FILE *fp;
-Node* NODE_LIST;
-Edge* EDGE_LIST;
-unsigned int NUM_OF_NODES;
-unsigned int NUM_OF_EDGES;
-unsigned int SOURCE_NODE_NO;
+Node* node_list;
+Edge* edge_list;
+unsigned int num_of_nodes;
+unsigned int num_of_edges;
+unsigned int source_node_no;
 
-#include "alloc.c"
+#include "alloc.cc"
 	 
 		  
 	 

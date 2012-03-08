@@ -12,8 +12,8 @@ naive:	naive/naive
 
 
 #*****************************************
-naive/naive: naive/main.c naive/bfs.c
-	gcc naive/main.c naive/bfs.c -o naive/naive -Wall
+naive/naive: naive/main.cc naive/bfs.cc
+	g++ naive/main.cc naive/bfs.cc -o naive/naive -Wall
 
 #*****************************************
 
