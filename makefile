@@ -19,3 +19,4 @@ naive/naive: naive/main.c naive/bfs.c
 
 clean:
 	rm ./navie/*~
+	rm ./*~
