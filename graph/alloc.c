@@ -1,5 +1,5 @@
 /*********************************************************************
-filename: gen.c 
+filename: alloc.c 
 author: onesuper
 email: onesupperclark@gmail.com
 
@@ -8,15 +8,14 @@ some functions used to allocate and free graphs
 
 #include <stdlib.h>
 #include <stdio.h>
-#inlcude "include/graph.h"
 
 /*
  * get a name of a graph file and read the file
  * line-by-line to generate the graph
  */ 
-void graph_read_and_alloc(char** filename) 
+void graph_read_and_alloc(char* filename) 
 {
-	 fp = fopen(filemane, "r");
+	 fp = fopen(filename, "r");
 	 if (!fp) {
 		  printf("Cannot read the graph file.\n");
 		  return;
@@ -35,29 +34,29 @@ void graph_read_and_alloc(char** filename)
 	 unsigned int start;
 	 unsigned int edge_num;
 	 for (i=0; i<NUM_OF_NODES; i++) {
-		  fscanf(fp, "d% %d", &start, &edge_num);
+		  fscanf(fp, "%u %u", &start, &edge_num);
 		  NODE_LIST[i].start = start;
 		  NODE_LIST[i].edge_num = edge_num = edge_num;
 	 }
 
 	 /* read the source node */
-	 fscanf(fp, "%d", &SOURCE_NODE_NO);
-	 printf("the source node is %d.\n", SOURCE_NODE_NO);
+	 fscanf(fp, "%u", &SOURCE_NODE_NO);
+	 printf("the source node is %u.\n", SOURCE_NODE_NO);
 	 
 	 /* read the number of edges */
-	 fscanf(fp, "%d", &NUM_OF_EDGES);
-	 printf("there are %d edges in the graph.\n");
+	 fscanf(fp, "%u", &NUM_OF_EDGES);
+	 printf("there are %u edges in the graph.\n", NUM_OF_EDGES);
 
 	 /* allocate the memroy of edges according to NUM_OF_EDGES */
-	 EDGE_LIST = (Edge*) malloc(sizeof(Edge)*NUM_OF_EDGES);
+	 EDGE_LIST = (Edge*) malloc(sizeof(Edge) * NUM_OF_EDGES);
 	 
 	 /* read the edges' information from disk to memory */
 	 unsigned int dest;
 	 unsigned int cost;
 	 for (i=0; i<NUM_OF_EDGES; i++) {
-		  fscanf(fp, "%d %d", &dest, &cost);
-		  EDGE_LIST.dest = dest;
-		  EDGE_LIST.cost = cost;
+		  fscanf(fp, "%u %u", &dest, &cost);
+		  EDGE_LIST[i].dest = dest;
+		  EDGE_LIST[i].cost = cost;
 	 }
 	 
 
@@ -72,3 +71,23 @@ void graph_free(void)
 	 return;
 	 
 }
+
+/*
+ * have a look at the memory to verify
+ */
+void graph_watch(void)
+{
+	 int i;
+	 printf("************ node ****************");	 
+	 for (i=0; i<NUM_OF_NODES; i++) {
+		  printf("%d %d\n", NODE_LIST[i].start, NODE_LIST[i].edge_num);
+	 }
+	 printf("*********** edge *****************");
+	 for (i=0; i<NUM_OF_EDGES; i++) {
+		  printf("%d %d\n", EDGE_LIST[i].dest, EDGE_LIST[i].cost);
+	 }
+	 return;
+	 
+}
+	 
+	 
