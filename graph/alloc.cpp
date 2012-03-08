@@ -1,5 +1,5 @@
 /*********************************************************************
-filename: alloc.cc 
+filename: alloc.cpp
 author: onesuper
 email: onesupperclark@gmail.com
 
@@ -88,6 +88,15 @@ void graph_watch(void)
 	 printf("************ edge **************\n");
 	 for (int i=0; i<num_of_edges; i++) {
 		  printf("%d %d\n", edge_list[i].dest, edge_list[i].cost);
+	 }
+	 printf("************ cost **************\n");
+	 for (int i=0; i<num_of_nodes; i++) {
+		  printf("%d\n", cost[i]);
+	 }
+	 printf("*********** counter *************\n");
+	 for (int i=0; i<MAX_LEVEL; i++) {
+		  if (counter[i] != 0)
+			   printf("%d\n", counter[i]);
 	 }
 	 return;
 }

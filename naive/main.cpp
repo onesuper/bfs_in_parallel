@@ -1,5 +1,5 @@
 /**********************************************************************
-filename: naive/main.cc
+filename: naive/main.cpp
 author: onesuper
 email: onesuperclark@gmail.com
 

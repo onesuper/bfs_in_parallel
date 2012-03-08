@@ -1,5 +1,5 @@
 /**********************************************************************
-filename: naive/bfs.cc
+filename: naive/bfs.cpp
 author: onesuper
 email: onesuperclark@gmail.com
 
@@ -19,6 +19,7 @@ void bfs(void)
 	 // visiting the source node now
 	 color[source_node_no] = GREY;
 	 current.push_back(source_node_no);
+	 cost[source_node_no] = 0;
 	 
 	 unsigned int index;
 	 while(!current.empty()) {

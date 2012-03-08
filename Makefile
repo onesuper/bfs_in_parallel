@@ -13,7 +13,7 @@ naive:	naive/naive
 
 #*****************************************
 naive/naive: naive/main.cpp
-	$(CC) naive/main.cpp -o naive/naive -Wall $(DEBUG)
+	$(CC0) naive/main.cpp -o naive/naive -Wall $(DEBUG)
 
 #*****************************************
 
