@@ -35,8 +35,7 @@ void gen_level_log(void)
 }
 
 
-void gen_test_log(float time_used, char* graph_name,
-				  char* graph_type, unsigned int num_of_levels) 
+void gen_test_log(float time_used, char* graph_name, char* graph_type) 
 {
 	 FILE* fp = fopen("./../test.log", "a");
 	 if (!fp) {
@@ -52,8 +51,7 @@ void gen_test_log(float time_used, char* graph_name,
 }
 
 void gen_test_log_cpu(float time_used, char* graph_name,
-					  char* graph_type, unsigned int num_of_levels,
-					  int num_of_threads) 
+					  char* graph_type, int num_of_threads) 
 {
 	 FILE* fp = fopen("./../../test.log", "a");
 	 if (!fp) {
@@ -62,7 +60,7 @@ void gen_test_log_cpu(float time_used, char* graph_name,
 	 }
 	 
 	 fprintf(fp, "%s %s %u %u %u %f %d\n", graph_type, graph_name,
-			 num_of_nodes, num_of_edges, num_of_levels, time_used, num_of_threads);
+			 num_of_nodes, num_of_edges, time_used, num_of_levels, num_of_threads);
 	 
 	 fclose(fp);
 	 return;

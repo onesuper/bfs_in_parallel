@@ -29,30 +29,34 @@ float bfs(int num_of_threads)
 	 
 	 unsigned int index;
 	 while(!current.empty()) {
-		  index = current.front();
-		  current.pop_front();
-
 		  omp_set_num_threads(num_of_threads); // adjust dynamitically
 
-// put all its neighbours in the current queue
-// and start parrallel
-#pragma omp parrallel for		  
-		  for (int i = node_list[index].start;
-			   i < (node_list[index].start + node_list[index].edge_num);
-			   i ++) {
-			   unsigned int id = edge_list[i].dest;
-			   //unsigned int weight = edge_list[i].cost;
-			   
-			   if (color[id] == WHITE) {
-					cost[id] = cost[index] + 1; // expand the cost, assuming all the edge cost is 1
-					counter[cost[id]] ++;
-					current.push_back(id);
-					color[id] = GREY;
-
-			   } // only if its neighbour is has not been visited
-		  }
-		  color[index] = BLACK;
+// proccess each node in the current queue in parallel
+#pragma omp parrallel for
 		  
+		  for (int k=0; k<current.size(); k++) {
+
+			   // pop out a node to deal with
+			   index = current.front();
+			   current.pop_front();
+
+			   // put all its neighbours in the current queue
+			   for (int i = node_list[index].start;
+					i < (node_list[index].start + node_list[index].edge_num);
+					i ++) {
+					unsigned int id = edge_list[i].dest;
+					//unsigned int weight = edge_list[i].cost;
+			   
+					if (color[id] == WHITE) {
+						 cost[id] = cost[index] + 1; // expand the cost, assuming all the edge cost is 1
+						 counter[cost[id]] ++;
+						 current.push_back(id);
+						 color[id] = GREY;
+
+					} // only if its neighbour is has not been visited
+			   }
+			   color[index] = BLACK;
+		  }
 	 }
 	 
 	 gettimeofday(&end, 0);
