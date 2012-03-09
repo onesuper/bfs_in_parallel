@@ -46,6 +46,16 @@ unsigned int num_of_edges;
 unsigned int source_node_no;
 unsigned int num_of_levels;
 
+/********************************************
+pointing to device
+ *******************************************/
+
+Node* d_node_list;
+Edge* edge_list;
+int* d_color;
+int* d_cost;
+int* counter;
+
 /********************************************/
 #include "alloc.cpp"
 		  

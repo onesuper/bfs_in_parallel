@@ -23,6 +23,6 @@ int main(int argc, char** argv)
 
 	 gen_level_log();
 	 gen_test_log(time_used, argv[1], "n0");
-	 
+	 graph_free();
 	 return 0;
 }
