@@ -8,6 +8,8 @@ some functions used to allocate and free graphs
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
+
 
 /*
  * get a name of a graph file and read the file
@@ -17,15 +19,15 @@ void graph_read_and_alloc(char* filename)
 {
 	 FILE* fp = fopen(filename, "r");
 	 if (!fp) {
-		  printf("Cannot read the graph file.\n");
+		  printf("Cannot open the graph file.\n");
 		  return;
 	 }
+
 	 
 	 fscanf(fp, "%d", &num_of_nodes);
 
 	 printf("************** graph **************\n");
 	 printf("there are %d nodes in the graph.\n", num_of_nodes);
-	 
 	 node_list = (Node*) malloc(sizeof(Node) * num_of_nodes);
 	 color = (int*) malloc(sizeof(int) * num_of_nodes);
 	 cost = (int*) malloc(sizeof(int) * num_of_nodes);
@@ -61,7 +63,7 @@ void graph_read_and_alloc(char* filename)
 	 for (int i=0; i<MAX_LEVEL; i++) {
 		  counter[i] = 0;
 	 }
-
+	 
 	 fclose(fp);
 	 return;
 }

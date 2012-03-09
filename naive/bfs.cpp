@@ -11,10 +11,15 @@ the single-core implemenation of bfs algorithm
 #include <deque>
 #include <sys/time.h>
 
-void bfs(void) 
+
+
+float bfs(void) 
 {
-	 printf("bfs starts.\n");
+	 struct timeval start, end;
+	 float time_used;
 	 std::deque<unsigned int> current;
+
+	 gettimeofday(&start, 0);
 
 	 // visiting the source node now
 	 color[source_node_no] = GREY;
@@ -45,9 +50,12 @@ void bfs(void)
 		  
 	 }
 	 
+	 gettimeofday(&end, 0);
+	 time_used = 1000000 * (end.tv_sec - start.tv_sec) +
+		  end.tv_usec - start.tv_usec;
+	 time_used /= 1000000;
+	 printf("used time: %f\n", time_used);
 	 
-	 
-	 printf("bfs ends.\n");
-	 return;
+	 return time_used;
 	 
 }

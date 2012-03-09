@@ -18,5 +18,4 @@ naive/naive: naive/main.cpp
 #*****************************************
 
 clean:
-	rm ./navie/*~
-	rm ./*~
+	rm -r ./*~

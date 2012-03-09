@@ -8,7 +8,8 @@ some utilities
 *********************************************************************/
 #include <stdio.h>
 
-void gen_log(void)
+
+void gen_level_log(void)
 {
 	 FILE* fp = fopen("./level.log", "w");
 	 if (!fp) {
@@ -28,4 +29,16 @@ void gen_log(void)
 }
 
 
-
+void gen_test_log(float time_used) 
+{
+	 FILE* fp = fopen("./../test.log", "a");
+	 if (!fp) {
+		  printf("Cannot open the test.log.\n");
+		  return;
+	 }
+	 
+	 fprintf(fp, "%u %u %f\n", num_of_nodes, num_of_edges, time_used);
+	 
+	 fclose(fp);
+	 return;
+}
