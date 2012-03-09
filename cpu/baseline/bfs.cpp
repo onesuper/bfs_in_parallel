@@ -1,19 +1,20 @@
 /**********************************************************************
-filename: naive/bfs.cpp
+filename: cpu/baseline/bfs.cpp
 author: onesuper
 email: onesuperclark@gmail.com
 
-the single-core implemenation of bfs algorithm
+bfs algorithm implemented by OpenMP without any optimization.
 
 ***********************************************************************/
 
+#include <omp.h>
 #include <stdio.h>
 #include <deque>
 #include <sys/time.h>
 
 
 
-float bfs(void) 
+float bfs(int num_of_threads) 
 {
 	 struct timeval start, end;
 	 float time_used;
@@ -30,8 +31,12 @@ float bfs(void)
 	 while(!current.empty()) {
 		  index = current.front();
 		  current.pop_front();
-		  
-		  // put all its neighbours in the current queue
+
+		  omp_set_num_threads(num_of_threads); // adjust dynamitically
+
+// put all its neighbours in the current queue
+// and start parrallel
+#pragma omp parrallel for		  
 		  for (int i = node_list[index].start;
 			   i < (node_list[index].start + node_list[index].edge_num);
 			   i ++) {

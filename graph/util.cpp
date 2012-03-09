@@ -8,7 +8,11 @@ some utilities
 *********************************************************************/
 #include <stdio.h>
 
-
+/*
+ * NOTES: gen_level_log() must be called before
+ * gen_test_log() because the num_of_levels can only be caught
+ * after calling gen_level_log
+ */
 void gen_level_log(void)
 {
 	 FILE* fp = fopen("./level.log", "w");
@@ -19,6 +23,8 @@ void gen_level_log(void)
 
 	 for (int i=1; i<MAX_LEVEL; i++) {
 		  if(counter[i] == 0) {
+			   num_of_levels = i - 1; 
+			   printf("The num of levels is %d\n", num_of_levels);
 			   break;
 		  }
 		  fprintf(fp, "%d\n", counter[i]);
@@ -29,7 +35,8 @@ void gen_level_log(void)
 }
 
 
-void gen_test_log(float time_used) 
+void gen_test_log(float time_used, char* graph_name,
+				  char* graph_type, unsigned int num_of_levels) 
 {
 	 FILE* fp = fopen("./../test.log", "a");
 	 if (!fp) {
@@ -37,8 +44,28 @@ void gen_test_log(float time_used)
 		  return;
 	 }
 	 
-	 fprintf(fp, "%u %u %f\n", num_of_nodes, num_of_edges, time_used);
+	 fprintf(fp, "%s %s %u %u %u %f\n", graph_type, graph_name,
+			 num_of_nodes, num_of_edges, num_of_levels, time_used);
 	 
 	 fclose(fp);
 	 return;
 }
+
+void gen_test_log_cpu(float time_used, char* graph_name,
+					  char* graph_type, unsigned int num_of_levels,
+					  int num_of_threads) 
+{
+	 FILE* fp = fopen("./../../test.log", "a");
+	 if (!fp) {
+		  printf("Cannot open the test.log.\n");
+		  return;
+	 }
+	 
+	 fprintf(fp, "%s %s %u %u %u %f %d\n", graph_type, graph_name,
+			 num_of_nodes, num_of_edges, num_of_levels, time_used, num_of_threads);
+	 
+	 fclose(fp);
+	 return;
+}
+
+

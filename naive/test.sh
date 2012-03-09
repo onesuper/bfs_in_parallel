@@ -1,5 +1,5 @@
 # test the correctness of naive
-cd naive
+
 ./naive ../test_case/tiny_graph.txt
 
 
@@ -17,4 +17,3 @@ cd naive
 ./naive ../test_case/real_graph/USA-road-d.USA.out
 ./naive ../test_case/real_graph/USA-road-d.W.out
 
-cd ..

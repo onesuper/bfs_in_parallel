@@ -44,6 +44,7 @@ int* counter;
 unsigned int num_of_nodes;
 unsigned int num_of_edges;
 unsigned int source_node_no;
+unsigned int num_of_levels;
 
 /********************************************/
 #include "alloc.cpp"
