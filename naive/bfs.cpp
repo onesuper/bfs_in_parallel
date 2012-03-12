@@ -28,6 +28,7 @@ float bfs(void)
 	 
 	 unsigned int index;
 	 while(!current.empty()) {
+		  // dequeue
 		  index = current.front();
 		  current.pop_front();
 		  
@@ -46,6 +47,7 @@ float bfs(void)
 
 			   } // only if its neighbour is has not been visited
 		  }
+		  //visit
 		  color[index] = BLACK;
 		  
 	 }

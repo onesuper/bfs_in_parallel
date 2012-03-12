@@ -51,10 +51,10 @@ pointing to device
  *******************************************/
 
 Node* d_node_list;
-Edge* edge_list;
+Edge* d_edge_list;
 int* d_color;
 int* d_cost;
-int* counter;
+int* d_counter;
 
 /********************************************/
 #include "alloc.cpp"

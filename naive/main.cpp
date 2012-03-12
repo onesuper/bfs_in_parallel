@@ -22,7 +22,7 @@ int main(int argc, char** argv)
 	 float time_used = bfs();
 
 	 gen_level_log();
-	 gen_test_log(time_used, argv[1], "n0");
+	 gen_test_log(time_used, argv[1], "naive");
 	 graph_free();
 	 return 0;
 }
