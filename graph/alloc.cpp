@@ -11,6 +11,8 @@ some functions used to allocate and free graphs
 #include <time.h>
 
 
+#define RANDOM_SOURCE
+
 /*
  * get a name of a graph file and read the file
  * line-by-line to generate the graph
@@ -44,6 +46,11 @@ void graph_read_and_alloc(char* filename)
 	 }
 
 	 fscanf(fp, "%u", &source_node_no);
+// make a tricky here
+#ifdef RANDOM_SOURCE
+	 srand((unsigned)time(0));
+	 source_node_no = rand() % num_of_nodes;
+#endif
 	 printf("the source node is %u.\n", source_node_no);
 	 
 	 fscanf(fp, "%u", &num_of_edges);
