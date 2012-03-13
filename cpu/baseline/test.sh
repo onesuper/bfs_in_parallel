@@ -1,60 +1,13 @@
+
+
 # correctness
 #./baseline ./../../test_case/tiny_graph.txt 1
-#./baseline ./../../test_case/tiny_graph.txt 2
-#./baseline ./../../test_case/tiny_graph.txt 3
-#./baseline ./../../test_case/tiny_graph.txt 4
-#./baseline ./../../test_case/tiny_graph.txt 5
-#./baseline ./../../test_case/tiny_graph.txt 6
-#./baseline ./../../test_case/tiny_graph.txt 7
-#./baseline ./../../test_case/tiny_graph.txt 8
-#./baseline ./../../test_case/tiny_graph.txt 9
-#./baseline ./../../test_case/tiny_graph.txt 10
-#./baseline ./../../test_case/tiny_graph.txt 11
-#./baseline ./../../test_case/tiny_graph.txt 12
-#./baseline ./../../test_case/tiny_graph.txt 13
-#./baseline ./../../test_case/tiny_graph.txt 14
+
 # real graph
-./baseline ./../../test_case/real_graph/USA-road-d.CAL.out 1
-./baseline ./../../test_case/real_graph/USA-road-d.CAL.out 2
+
+for i in $(seq 1 30)
+do
+	./baseline ./../../test_case/real_graph/USA-road-d.CAL.out $i
+done
+
 #./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 1
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 2
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 3
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 4
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 5
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 6
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 7
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 8
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 9
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 10
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 11
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 12
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 13
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 14
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 15
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 16
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 17
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 18
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 19
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 20
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 21
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 22
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 23
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 24
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 25
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 26
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 27
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 28
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 29
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 30
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 31
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 32
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 33
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 34
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 35
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 36
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 37
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 38
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 39
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 40
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 41
-#./baseline ./../../test_case/real_graph/USA-road-d.CTR.out 42

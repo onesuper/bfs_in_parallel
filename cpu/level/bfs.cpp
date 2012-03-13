@@ -1,10 +1,13 @@
 /**********************************************************************
-filename: cpu/baseline/bfs.cpp
+filename: cpu/level/bfs.cpp
 author: onesuper
 email: onesuperclark@gmail.com
 
 bfs algorithm implemented by OpenMP without any optimization.
 
+
+the thread number is dynamically set to to the number of nodes
+in each level
 ***********************************************************************/
 
 #include <omp.h>
@@ -14,7 +17,7 @@ bfs algorithm implemented by OpenMP without any optimization.
 
 
 
-float bfs(int num_of_threads) 
+float bfs() 
 {
 	 struct timeval start, end;
 	 float time_used;
@@ -28,21 +31,20 @@ float bfs(int num_of_threads)
 	 cost[source_node_no] = 0;
 
 	 // set threads number
-	 omp_set_num_threads(num_of_threads);
+	 
 	 unsigned int index; // index => node u
 
 	 omp_lock_t current_lock;
 	 omp_lock_t color_lock;
 	 omp_lock_t cost_lock;
-	 
+
 	 omp_init_lock(&current_lock);
 	 omp_init_lock(&color_lock);
 	 omp_init_lock(&cost_lock);
 	 
-	 
 	 while(!current.empty()) {
-		  
 
+		  omp_set_num_threads(current.size());
 
 // proccess each node in the current queue in parallel
 #pragma omp parallel for shared(current, color, counter, cost) private(index)
@@ -71,7 +73,6 @@ float bfs(int num_of_threads)
 						 cost[id] = cost[index] + 1; // expand the cost, assuming all the edge cost is 1
 						 omp_unset_lock(&cost_lock);
 
-						 
 						 omp_set_lock(&current_lock);
 						 current.push_back(id);
 						 omp_unset_lock(&current_lock);

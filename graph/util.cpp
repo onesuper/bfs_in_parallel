@@ -67,3 +67,10 @@ void gen_test_log_cpu(float time_used, char* graph_name,
 }
 
 
+void calculate_counter()
+{
+	 for (int i=0; i<num_of_nodes; i++) {
+		  counter[cost[i]] ++;
+	 }
+	 return;
+}

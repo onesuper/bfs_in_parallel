@@ -41,7 +41,7 @@ float bfs(void)
 			   
 			   if (color[id] == WHITE) {
 					cost[id] = cost[index] + 1; // expand the cost, assuming all the edge cost is 1
-					counter[cost[id]] ++;
+					//counter[cost[id]] ++; move the calculation out of bfs()
 					current.push_back(id);
 					color[id] = GREY;
 

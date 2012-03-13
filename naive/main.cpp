@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 	 graph_read_and_alloc(argv[1]);
 	 //graph_watch();
 	 float time_used = bfs();
-
+	 calculate_counter();
 	 gen_level_log();
 	 gen_test_log(time_used, argv[1], "naive");
 	 graph_free();
