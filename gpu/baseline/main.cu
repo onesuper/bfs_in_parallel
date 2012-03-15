@@ -20,11 +20,15 @@ int main(int argc, char** argv)
 		  printf("please give the path of the graph.\n");
 		  return -1;
 	 }
+	 if (init_cuda()) {
+		  return -1;
+	 }
+	 printf("CUDA has been initialized.\n");
+
 	 graph_read_and_alloc(argv[1]);
 	 device_alloc_and_copy();
-	 //graph_watch();
 	 float time_used = bfs();
-
+	 calculate_counter();
 	 gen_level_log();
 	 gen_test_log(time_used, argv[1], "gpu_baseline");
 	 device_free();

@@ -15,7 +15,7 @@ in each level
 #include <deque>
 #include <sys/time.h>
 
-
+//#define DEBUG
 
 float bfs() 
 {

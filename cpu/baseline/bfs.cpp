@@ -12,7 +12,7 @@ bfs algorithm implemented by OpenMP without any optimization.
 #include <deque>
 #include <sys/time.h>
 
-
+//#define DEBUG
 
 float bfs(int num_of_threads) 
 {

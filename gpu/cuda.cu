@@ -7,7 +7,41 @@ allocate and free memory on device
 for common use
 *************************************************************************/
 
-#include <cuda.h>
+#include <stdio.h>
+#include <cuda_runtime.h>
+
+bool init_cuda() 
+{
+	int count = 0;
+
+	cudaGetDeviceCount(&count);
+	
+	printf("%d device\n", count);
+
+	if (count == 0) {
+		fprintf(stderr, "There is no device.\n");
+		return false;
+	}
+
+	int i;
+	for (i=0; i<count; i++) {
+		cudaDeviceProp prop;
+		if (cudaGetDeviceProperties(&prop, i) == cudaSuccess) {
+			if (prop.major >= 1) {
+				break;
+			}
+		}
+	}
+
+	if (i == count) {
+		fprintf(stderr, "There is no device supporting CUDA 1.x.\n");
+		return false;
+	}
+
+	cudaSetDevice(i);
+
+	return true;
+}
 
 
 void device_alloc_and_copy(void) {
