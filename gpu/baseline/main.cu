@@ -32,9 +32,7 @@ int main(int argc, char** argv)
 
 	 graph_read_and_alloc(argv[1]);     //CPU alloc
 	 device_alloc_and_copy();           //GPU alloc
-
 	 float time_used = bfs();
-
 	 calculate_counter();
 	 gen_level_log();
 	 gen_test_log(time_used, argv[1], "gpu_baseline");
