@@ -8,7 +8,7 @@ These are some code pieces of my undergraduation research
 on breadth-first search in parrallel.
 
 
-## Organization 
+## Organization of the Codes
 
 The project consists of three parts:
 

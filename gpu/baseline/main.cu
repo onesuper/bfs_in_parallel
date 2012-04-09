@@ -11,8 +11,13 @@ a baseline parallel bfs implementation using CUDA
 #include "./../../graph/graph.h"
 #include "./../cuda.cu"
 #include <stdlib.h>
+#include <math.h>
 #include "bfs.cpp"
 
+#define MAX_THREADS_PER_BLOCK 512
+
+
+#define CUDA_ENABLE
 
 int main(int argc, char** argv)
 {
@@ -25,13 +30,15 @@ int main(int argc, char** argv)
 	 }
 	 printf("CUDA has been initialized.\n");
 
-	 graph_read_and_alloc(argv[1]);
-	 device_alloc_and_copy();
+	 graph_read_and_alloc(argv[1]);     //CPU alloc
+	 device_alloc_and_copy();           //GPU alloc
+
 	 float time_used = bfs();
+
 	 calculate_counter();
 	 gen_level_log();
 	 gen_test_log(time_used, argv[1], "gpu_baseline");
-	 device_free();
-	 graph_free();
+	 device_free();             //CPU free
+	 graph_free();              //GPU free
 	 return 0;
 }

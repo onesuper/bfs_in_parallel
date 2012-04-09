@@ -34,7 +34,7 @@ void graph_read_and_alloc(char* filename)
 	 color = (int*) malloc(sizeof(int) * num_of_nodes);
 	 cost = (int*) malloc(sizeof(int) * num_of_nodes);
 
-
+     // initialize
 	 unsigned int start;
 	 unsigned int edge_num;
 	 for (int i=0; i<num_of_nodes; i++) {
@@ -45,7 +45,7 @@ void graph_read_and_alloc(char* filename)
 		  cost[i] = INF;
 	 }
 
-	 fscanf(fp, "%u", &source_node_no);
+	 fscanf(fp, "%u", &source_node_no);  // basically it's #0 node
 // make a tricky here
 #ifdef RANDOM_SOURCE
 	 srand((unsigned)time(0));
@@ -70,6 +70,17 @@ void graph_read_and_alloc(char* filename)
 	 for (int i=0; i<MAX_LEVEL; i++) {
 		  counter[i] = 0;
 	 }
+
+// CPU version use the std:queue instead
+#ifdef CUDA_ENABLE
+     current_set = (unsigned int*) malloc(sizeof(unsigned int) * num_of_nodes);
+     for (int i=0; i<num_of_nodes; i++) {
+          current_set[i] = INF;
+     }
+     current_set_size_new = (int*) malloc(sizeof(int) * 1);
+     *current_set_size_new = 0;
+#endif
+
 	 
 	 fclose(fp);
 	 return;
@@ -81,7 +92,10 @@ void graph_free(void)
 	 free(edge_list);
 	 free(color);
 	 free(cost);
-	 return;
+#ifdef
+     free(current_set);
+#endif
+     return;
 	 
 }
 

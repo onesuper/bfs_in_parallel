@@ -3,15 +3,21 @@ filename:graph.c
 author: onesuper
 email: onesuperclark@gmail.com
 
-defining the graph's, node's, edge's structures in this file
+defining the graph, node, edge structures in this file
  
 nodes and edges are two big arrays:
  
-each node in nodes array has two indexing infomation to
-find all its outcoming edges(start and width).
+each node in nodes array has two indexing infomation: 
+to find all its outcoming edges(start and width).
 
-the dest variable of each edge in edges array points out
-the node it connecting to.
+for example:
+
+node(3 , 5) in *node_list* means it has 5 outcomming edges,
+ the first of which is the thrid edge in *edge_list*
+
+the variable *dest* of edge points out the node it connecting to,
+and *cost* means the cost of the edge.
+
 ************************************************************************/
 
 #define WHITE	0				/* not visited */
@@ -36,25 +42,32 @@ typedef struct edge_t
 global variables 
 *********************************************/
 
-Node* node_list;
-Edge* edge_list;
-int* color;
-int* cost;
-int* counter;
 unsigned int num_of_nodes;
 unsigned int num_of_edges;
 unsigned int source_node_no;
 unsigned int num_of_levels;
 
-/********************************************
-pointing to device
- *******************************************/
 
+/* pointing to host */
+Node* node_list;
+Edge* edge_list;
+int* color;
+int* cost;
+int* counter;
+unsigned int* current_set;       /* only be used in GPU version because CUDA doesn't support heap variable */
+int* current_set_size_new;      /* let cpu know the size of current_size */
+
+
+/* pointing to device  FOR CUDA */
 Node* d_node_list;
 Edge* d_edge_list;
 int* d_color;
 int* d_cost;
 int* d_counter;
+unsigned int* d_current_set_a;    
+unsigned int* d_current_set_b;
+int* d_current_set_size_new;
+
 
 /********************************************/
 #include "alloc.cpp"
@@ -67,4 +80,3 @@ extern void graph_free(void);
 
 extern void gen_log(void);
 
-	 

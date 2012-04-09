@@ -3,7 +3,7 @@ filename: util.cpp
 author: onesuper
 email: onesuperclark@gmail.com
 
-some utilities
+some helper, like loggers
 
 *********************************************************************/
 #include <stdio.h>

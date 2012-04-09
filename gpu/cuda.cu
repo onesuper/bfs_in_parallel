@@ -4,6 +4,7 @@ author: onesuper
 email: onesuperclark@gmail.com
 
 allocate and free memory on device
+
 for common use
 *************************************************************************/
 
@@ -66,6 +67,18 @@ void device_alloc_and_copy(void) {
 	 cudaMemcopy(d_counter, counter, sizeof(int) * MAX_LEVEL,
 				 cudaMemcpyHostToDevice);
 
+     cudaMalloc((void**) &d_current_set_a, sizeof(unsigned int) * num_of_nodes);
+     cudaMemcopy(d_current_set_a, current_set, sizeof(unsigned int) * num_of_nodes,
+                 cudaMemcpyHostToDevice);
+
+     cudaMalloc((void**) &d_current_set_b, sizeof(unsigned int) * num_of_nodes);
+     cudaMemcopy(d_current_set_b, current_set, sizeof(unsigned int) * num_of_nodes,
+                 cudaMemcpyHostToDevice);
+
+     cudaMalloc((void**) &d_current_set_size_new, sizeof(int) * 1);
+     cudaMemcopy(d_current_set_size_new, current_set_size, sizeof(int) * 1,
+                 cudaMemcpyHostToDevice);
+
 	 return; 
 }
 
@@ -75,5 +88,8 @@ void device_free(void) {
 	 cudaFree(d_cost);
 	 cudaFree(d_color);
 	 cudaFree(d_counter);
-	 return;
+     cudaFree(d_current_set_a);
+     cudaFree(d_current_set_b);
+     cudaFree(d_current_set_size_new);
+     return;
 }
