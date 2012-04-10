@@ -22,7 +22,10 @@ They are all tested on computer with 4-sockets CPUs (each one has 8 cores).
 
 They are tested on Tesla 2050 GPU.
 
+
 The test cases are from following 4 sets:
+
+
 1. real graphs from DIAMCS
 2. regular graphs
 3. irregular graph

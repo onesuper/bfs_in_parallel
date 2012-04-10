@@ -8,15 +8,17 @@ CC1 = nvcc
 #**************************************
 
 all:	naive cpu
-
 naive:	naive/naive
 cpu:	cpu/baseline/baseline cpu/level/level
 gpu:	gpu/baseline/baseline
+
+
 #*******************************************
 
 # naive
 naive/naive: naive/main.cpp
 	$(CC0) naive/main.cpp -o naive/naive -Wall
+
 
 # cpu
 cpu/baseline/baseline: cpu/baseline/main.cpp
@@ -25,10 +27,12 @@ cpu/baseline/baseline: cpu/baseline/main.cpp
 cpu/level/level: cpu/level/main.cpp
 	$(CC0) cpu/level/main.cpp -o cpu/level/level -Wall $(OMPFLAG)
 
+
+#gpu
 gpu/baseline/baseline: gpu/baseline/main.cu
 	$(CC1) gpu/baseline/main.cu -o gpu/baseline/baseline
 
-# gpu
+
 
 #*****************************************
 
