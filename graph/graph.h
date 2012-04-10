@@ -54,7 +54,7 @@ Edge* edge_list;
 int* color;
 int* cost;
 int* counter;
-unsigned int* current_set;       /* only be used in GPU version because CUDA doesn't support heap variable */
+unsigned int* current_set;       /* used in GPU version because CUDA doesn't support heap variable */
 int* current_set_size_new;      /* let cpu know the size of current_size */
 
 
