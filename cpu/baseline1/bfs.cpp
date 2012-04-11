@@ -23,30 +23,30 @@ float bfs(int num_of_threads)
 	 gettimeofday(&start, 0);
 
 	 // visiting the source node now
-	 color[source_node_no] = GREY;
+	 color[source_node_no] = BLACK;
 	 current.push_back(source_node_no);
 	 cost[source_node_no] = 0;
 
 	 // set threads number
 	 omp_set_num_threads(num_of_threads);
+
+
 	 unsigned int index; // index => node u
 
-	 omp_lock_t current_lock;
 
-	 omp_init_lock(&current_lock);
 	 
-	 
-	 
-	 
+	 	 
 	 while(!current.empty()) {
 // proccess each node in the current queue in parallel
-#pragma omp parallel for shared(current, color, counter, cost) private(index)
+#pragma omp parallel for shared(current, color, cost) private(index)
 		  for (int i=0; i<current.size(); i++ ) {
 			   
-			   omp_set_lock(&current_lock);
-			   index = current.front();
-			   current.pop_front();
-			   omp_unset_lock(&current_lock);
+               // LockedDequeue
+#pragma omp parallel
+               {
+                    index = current.front();
+                    current.pop_front();
+			   }
 			   
 
                Node cur_node = node_list[index];
@@ -54,33 +54,37 @@ float bfs(int num_of_threads)
                {
 					
 					unsigned int id = edge_list[i].dest; // id => node v
-	
-                    int its_color = yuanzi;
 
-					if (its_color == WHITE) {
 
-						 omp_set_lock(&cost_lock);
-						 cost[id] = cost[index] + 1; // expand the cost, assuming all the edge cost is 1
-						 omp_unset_lock(&cost_lock);
+                    if (color[id] == WHITE) {
+                         int its_color;
 
-						 
-						 omp_set_lock(&current_lock);
-						 current.push_back(id);
-						 omp_unset_lock(&current_lock);
+                         // LockeReadandSet(color[v], BLACK)
+#pragma omp critical
+                         {
+                              if (color[id] == WHITE) {
+                                   its_color = WHITE;
+                                   color[id] = BLACK;
+                              } else {
+                                   its_color = BLACK;
+                              }
+                         }
 
-						 
-						 color[id] = GREY;
-						 
 
-					} // only if its neighbour is has not been visited
-					
+                         if (its_color == WHITE) {   //ensure only one thread arrive here
+                              cost[id] = cost[index] + 1;
+                              // LockedEnqueue
+#pragma omp critical                         
+                              current.push_back(id);
+                         } // only if its neighbour is has not been visited
+					}
 					
 			   }
 		  }
 
 	 } 
 	 
-	 omp_destroy_lock(&current_lock);
+
 
 	 gettimeofday(&end, 0);
 	 time_used = 1000000 * (end.tv_sec - start.tv_sec) +

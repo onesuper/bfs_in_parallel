@@ -22,14 +22,14 @@ The project consists of three parts:
 
 1. A naive implementation of bfs in C language. (The algorithm is from CLRS)
 2. Several parrallel versions for Multi-core platform implemented in OpenMP.
- * baseline1
- * baseline2
- * level
- * bitmap
- * socket
+ * **baseline1**: single queue/the num of threads is given by command line argument
+ * **baseline2**: double queues
+ * **level**: the num of threads equals the number of nodes in the current queue
+ * **bitmap**: optimized with a bitmap 
+ * **socket**: local socket queue version
 3. Serveral parrallel versions for Many-core platform implemented in NVIDIA CUDA.
- * baseline
- * flexible
+ * **baseline**
+ * **flexible**
 
 They are all tested on computer with 4-sockets CPUs (each one has 8 cores) and a NVIDIA TELSA 2050 graphics card. 
 
@@ -93,11 +93,11 @@ algorithm 2
         u = LockedDequeue(CQ);
         for each v in adjacent to u do:
             if color[v] = WHITE then:
-                its_color = LockedReadSet(color[v], GREY);
+                its_color = LockedReadSet(color[v], BLACK);
                 if its_color = WHITE then:
                     LockedEnqueue(CQ, v);
                     cost[v] = cost[u] + 1;
-        color[u] = BLACK;  
+                  
         Synchronize;
         
             
@@ -118,7 +118,7 @@ algorithm 3
                 its_color = LockedReadSet(color[v], BLACK);
                 if its_color = WHITE then:  //ensure only one thread access
                     LockedEnqueue(NQ, v);   // to node v
-                    cost[v] = cost[u] + 1;  
+                    cost[v] = cost[u] + 1;
          Synchronize;
          Swap(CQ, NQ);
     
