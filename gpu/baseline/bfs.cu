@@ -66,7 +66,7 @@ float bfs()
 	 gettimeofday(&start, 0);
 
 	 // visiting the source node now(CPU)
-	 color[source_node_no] = GREY;
+	 color[source_node_no] = BLACK;
 	 current_set[0]= source_node_no;
 	 cost[source_node_no] = 0;
 	 

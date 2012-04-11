@@ -68,9 +68,9 @@ float bfs(int num_of_threads)
 						 current.push_back(id);
 						 omp_unset_lock(&current_lock);
 
-						 omp_set_lock(&color_lock);
+						 
 						 color[id] = GREY;
-						 omp_unset_lock(&color_lock);
+						 
 
 					} // only if its neighbour is has not been visited
 					
