@@ -79,10 +79,10 @@ float bfs(int num_of_threads)
                          } // only if its neighbour is has not been visited
 					}
 					
-			   }
-		  }
+			   } // end of for
+		  } // end of for
 
-	 } 
+	 } //end of while
 	 
 
 
