@@ -3,7 +3,7 @@
 # correctness
 for i in $(seq 1 6)
 do
-	./baseline ./../../test_case/tiny_graph.txt $i
+	./baseline1 ./../../test_case/tiny_graph.txt $i
 done
 # real graph
 

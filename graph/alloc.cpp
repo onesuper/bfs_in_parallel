@@ -11,7 +11,7 @@ some functions used to allocate and free graphs
 #include <time.h>
 
 
-#define RANDOM_SOURCE
+//#define RANDOM_SOURCE
 
 /*
  * get a name of a graph file and read the file
@@ -77,7 +77,7 @@ void graph_read_and_alloc(char* filename)
      for (int i=0; i<num_of_nodes; i++) {
           current_set[i] = INF;
      }
-     current_set_size_new = (int*) malloc(sizeof(int) * 1);
+     current_set_size_new = (int*) malloc(sizeof(int));
      *current_set_size_new = 0;
 #endif
 
@@ -92,7 +92,7 @@ void graph_free(void)
 	 free(edge_list);
 	 free(color);
 	 free(cost);
-#ifdef
+#ifdef CUDA_ENABLE
      free(current_set);
 #endif
      return;
