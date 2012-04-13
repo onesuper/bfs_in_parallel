@@ -1,0 +1,47 @@
+name    Vertex  Edge    average_degree  
+
+RGL1    1M      3M      6
+RGL2    1M      4M      8
+RGL3    1M      6M      12
+RGL4    1M      8M      16
+RGL5    5M      15M     6
+RGL6    5M      20M     8
+RGL7    5M      30M     12
+RGL8    5M      40M     16
+RGL9    10M     30M     6
+RGL10   10M     40M     8
+---------------------------------
+IRGL1   1M      4M      7
+IRGL2   1M      5M      9
+IRGL3   1M      7M      13
+IRGL4   1M      9M      17
+IRGL5   5M      20M     7
+IRGL6   5M      25M     9
+IRGL7   5M      35M     13
+IRGL8   5M      45M     17
+IRGL9   10M     35M     7
+IRGL10  10M     45M     9
+-----------------------------------
+SW1     1M      3M      6     
+SW2	    1M      4M      8
+SW3	    1M      6M      12
+SW4	    1M      8M      16
+SW5	    5M      15M     6
+SW6	    5M      20M     8
+SW7	    5M      30M     12
+SW8	    5M      40M     16
+SW9	    10M     30M     6
+SW10    10M     60M     8
+-----------------------------------
+BAY     321K    400K    2
+NY      264K    367K    3
+COL     436K    529K    2    
+FLA     1M      1.4M    3
+Cal     1.9M    2.3M    2
+NE      1.5M    1.9M    3
+NW      1.2M    1.4M    2
+LKS     2.8M    3.4M    3
+E       3.6M    4.4M    3
+W       6.3M    7.6M    2
+CTR     14M     17M     2
+USA     24M     29M     2

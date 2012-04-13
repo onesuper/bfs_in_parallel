@@ -55,8 +55,8 @@ while True:
       node_to = string.atoi(list[1]) 
       if node_from != node_old:
          
-         start.append(str(index))
-         width.append(str(node_counter))
+         start.append(index)
+         width.append(node_counter)
          node_counter = 0
       
       node_old = node_from
@@ -80,8 +80,8 @@ outfile.write(node_num_str + '\n')
 
 i = 0
 while i < len(start):
-      outfile.write(start[i] + ' ')
-      outfile.write(width[i] + '\n')
+      outfile.write(str(start[i]) + ' ')
+      outfile.write(str(width[i]) + '\n')
       i += 1
 
 
