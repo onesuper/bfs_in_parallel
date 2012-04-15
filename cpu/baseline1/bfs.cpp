@@ -29,20 +29,16 @@ float bfs(int num_of_threads)
 
 	 // set threads number
 	 omp_set_num_threads(num_of_threads);
-
-
-	 unsigned int index; // index => node u
-
-
-	 
 	 	 
 	 while(!current.empty()) {
 // proccess each node in the current queue in parallel
-#pragma omp parallel for shared(current, color, cost) private(index)
+#pragma omp parallel for shared(current, color, cost)
 		  for (int i=0; i<current.size(); i++ ) {
 			   
+               unsigned int index;
+
                // LockedDequeue
-#pragma omp parallel
+#pragma omp critical
                {
                     index = current.front();
                     current.pop_front();

@@ -43,7 +43,7 @@ void gen_test_log(float time_used, char* graph_name, char* graph_type)
 		  return;
 	 }
 	 
-	 fprintf(fp, "%s %s %u %u %u %f\n", graph_type, graph_name,
+	 fprintf(fp, "%s\t%s\t%u\t%u\t%u\t%f\n", graph_type, graph_name,
 			 num_of_nodes, num_of_edges, num_of_levels, time_used);
 	 
 	 fclose(fp);
@@ -59,7 +59,7 @@ void gen_test_log_cpu(float time_used, char* graph_name,
 		  return;
 	 }
 	 
-	 fprintf(fp, "%s %s %u %u %u %f %d\n", graph_type, graph_name,
+	 fprintf(fp, "%s\t%s\t%u\t%u\t%u\t%f\t%d\n", graph_type, graph_name,
 			 num_of_nodes, num_of_edges, time_used, num_of_levels, num_of_threads);
 	 
 	 fclose(fp);

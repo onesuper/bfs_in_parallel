@@ -1,0 +1,47 @@
+name    Vertex  Edge    average_degree  size
+
+RGL1    1M      3M      6               70MB
+RGL2    1M      4M      8               90MB
+RGL3    1M      6M      12              131MB
+RGL4    1M      8M      16              171MB
+RGL5    5M      15M     6               381MB
+RGL6    5M      20M     8               490MB
+RGL7    5M      30M     12              710MB
+RGL8    5M      40M     16              926MB
+RGL9    10M     30M     6               774MB
+RGL10   10M     40M     8               993MB
+---------------------------------
+IRGL1   1M      4M      7               91MB
+IRGL2   1M      5M      9               111MB
+IRGL3   1M      7M      13              152MB
+IRGL4   1M      9M      17              192MB
+IRGL5   5M      20M     7               490MB
+IRGL6   5M      25M     9               599MB
+IRGL7   5M      35M     13              819MB
+IRGL8   5M      45M     17              1GB
+IRGL9   10M     35M     7               1004MB
+IRGL10  10M     45M     9               1.2GB
+-----------------------------------
+SW1     1M      3M      6               60MB
+SW2	    1M      4M      8               77MB
+SW3	    1M      6M      12              112MB
+SW4	    1M      8M      16              146MB
+SW5	    5M      15M     6               330BMB
+SW6	    5M      20M     8               425MB
+SW7	    5M      30M     12              615MB
+SW8	    5M      40M     16              802MB
+SW9	    10M     30M     6               669MB
+SW10    10M     40M     8               860MB
+-----------------------------------
+BAY     321K    400K    2
+NY      264K    367K    3
+COL     436K    529K    2    
+FLA     1M      1.4M    3
+CAL     1.9M    2.3M    2
+NE      1.5M    1.9M    3
+NW      1.2M    1.4M    2
+LKS     2.8M    3.4M    3
+E       3.6M    4.4M    3
+W       6.3M    7.6M    2
+CTR     14M     17M     2
+USA     24M     29M     2

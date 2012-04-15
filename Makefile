@@ -38,3 +38,4 @@ gpu/baseline/baseline: gpu/baseline/main.cu
 
 clean:
 	rm -r ./*~
+
