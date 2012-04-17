@@ -1,5 +1,10 @@
 
-file1 = open("cpu_baseline_2to100")
+
+import string
+
+name = "cpu_baseline1_1to100"
+
+file1 = open(name)
 
 
 i = 0
@@ -17,48 +22,25 @@ while True:
       list = line.split()
       if len(list) > 0:
          if i % 4 == 0 :
-            a.append(list[6])
-            print "a", i
+            a.append(string.atof(list[5]))
+           
          elif i % 4 == 1:
-            b.append(list[6])
-            print "b", i
+            b.append(string.atof(list[5]))
+           
          elif i % 4 == 2:
-            c.append(list[6])
-            print "c", i
+            c.append(string.atof(list[5]))
+          
          else:
-            d.append(list[6])
-            print "d", i
+            d.append(string.atof(list[5]))
+          
          i += 1
-        
-
-print a 
-print b
-print c
-print d
 
 
-outfile = open("out", 'w')
+outfile = open(name+".dat", 'w')
 
 
-for one in a:
-    outfile.write(str(one) + "\n")
-
-outfile.write('\n')
-
-for one in b:
-    outfile.write(str(one) + "\n")
-
-outfile.write('\n')
-
-
-for one in c:
-    outfile.write(str(one) + "\n")
-
-outfile.write('\n')
-
-
-for one in d:
-    outfile.write(str(one) + "\n")
-
-outfile.write('\n')
+i = 0
+while i < 100:
+      outfile.write(str(i+1)+' '+str(a[i]*1000) + " "+str(b[i]*1000) + " " + str(c[i]*1000) + " "  + str(d[i]*1000) + '\n')
+      i += 1
 
