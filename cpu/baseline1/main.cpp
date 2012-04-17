@@ -23,7 +23,7 @@ int main(int argc, char** argv)
 	 float time_used = bfs(atoi(argv[2]));
 	 calculate_counter();
 	 gen_level_log();
-	 gen_test_log_cpu(time_used, argv[1], "cpu_baseline", atoi(argv[2]));
+	 gen_test_log_cpu(time_used, argv[1], "cpu_baseline1", atoi(argv[2]));
 	 graph_free();
 	 return 0;
 }

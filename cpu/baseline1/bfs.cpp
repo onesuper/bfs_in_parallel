@@ -31,9 +31,12 @@ float bfs(int num_of_threads)
 	 omp_set_num_threads(num_of_threads);
 	 	 
 	 while(!current.empty()) {
+
+          int parallel_num = current.size();
+
 // proccess each node in the current queue in parallel
 #pragma omp parallel for shared(current, color, cost)
-		  for (int i=0; i<current.size(); i++ ) {
+		  for (int i=0; i<parallel_num; i++) {
 			   
                unsigned int index;
 
@@ -50,8 +53,6 @@ float bfs(int num_of_threads)
                {
 					
 					unsigned int id = edge_list[i].dest; // id => node v
-
-
                     if (color[id] == WHITE) {
                          int its_color;
 
@@ -71,13 +72,15 @@ float bfs(int num_of_threads)
                               cost[id] = cost[index] + 1;
                               // LockedEnqueue
 #pragma omp critical                         
-                              current.push_back(id);
+                              {
+                                   current.push_back(id);
+                              }
                          } // only if its neighbour is has not been visited
 					}
 					
 			   } // end of for
 		  } // end of for
-
+         
 	 } //end of while
 	 
 

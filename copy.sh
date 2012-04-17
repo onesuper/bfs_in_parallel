@@ -5,3 +5,4 @@ scp -r ./cpu chengyichao@lab:~/Code/parrallel_bfs/
 
 
 #scp  ./Makefile chengyichao@lab:~/Code/parrallel_bfs/ 
+#scp ./clean.sh chengyichao@lab:~/Code/parrallel_bfs/

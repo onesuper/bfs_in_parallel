@@ -104,6 +104,7 @@ void graph_free(void)
  */
 void graph_watch(void)
 {
+/*
 	 printf("************ node **************\n");	 
 	 for (int i=0; i<num_of_nodes; i++) {
 		  printf("%d %d\n", node_list[i].start, node_list[i].edge_num);
@@ -112,6 +113,8 @@ void graph_watch(void)
 	 for (int i=0; i<num_of_edges; i++) {
 		  printf("%d %d\n", edge_list[i].dest, edge_list[i].cost);
 	 }
+
+
 	 printf("************ cost **************\n");
 	 for (int i=0; i<num_of_nodes; i++) {
 		  printf("%d\n", cost[i]);
@@ -121,6 +124,13 @@ void graph_watch(void)
 		  if (counter[i] != 0)
 			   printf("%d\n", counter[i]);
 	 }
+*/
+     for (int i=0; i<num_of_nodes; i++) {
+          if(color[i] != 2) {
+               printf("%d\t%d\n", i,  color[i]);
+               exit(1);
+          }
+     }
 	 return;
 }
 	 
