@@ -9,7 +9,7 @@ CC1 = nvcc
 
 all:	naive cpu
 naive:	naive/naive
-cpu:	cpu/baseline1/baseline1	cpu/baseline2/baseline2 cpu/level/level
+cpu:	cpu/baseline1/baseline1	cpu/baseline2/baseline2 cpu/flexible/flexible
 gpu:	gpu/baseline/baseline
 
 
@@ -30,8 +30,8 @@ cpu/baseline2/baseline2: cpu/baseline2/main.cpp
 
 
 
-cpu/level/level: cpu/level/main.cpp
-	$(CC0) cpu/level/main.cpp -o cpu/level/level -Wall $(OMPFLAG)
+cpu/flexible/flexible: cpu/flexible/main.cpp
+	$(CC0) cpu/flexible/main.cpp -o cpu/flexible/flexible -Wall $(OMPFLAG)
 
 
 #gpu
