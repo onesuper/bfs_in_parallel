@@ -1,0 +1,1 @@
+scp chengyichao@lab:~/Code/parrallel_bfs/test.log  ~/Desktop/

@@ -60,6 +60,8 @@ float bfs(int num_of_threads)
 					unsigned int id = edge_list[i].dest; // id => node v          
                     if (color[id] == WHITE) {
 
+
+/*
                          int its_color;
 
                          // LockeReadandSet(color[v], BLACK)
@@ -83,6 +85,14 @@ float bfs(int num_of_threads)
                               }
                          }
 
+*/
+                         color[id] = BLACK;
+                         cost[id] = cost[index] + 1;
+                         
+#pragma omp critical
+                         {    
+                              next.push_back(id);
+                         }
                     } // only if its neighbour is has not been visited
 			   } // end of for each v
 		  } // end of for each u ;barrier here
