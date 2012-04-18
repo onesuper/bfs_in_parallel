@@ -56,6 +56,9 @@ int* cost;
 int* counter;
 unsigned int* current_set;       /* used in GPU version because CUDA doesn't support heap variable */
 int* current_set_size_new;      /* let cpu know the size of current_size */
+bool* visited;
+bool* mask;
+bool* updating_mask;
 
 
 /* pointing to device  FOR CUDA */

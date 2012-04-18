@@ -12,6 +12,10 @@ a baseline parallel bfs implementation using OpenMP
 #include <stdlib.h>
 #include "bfs.cpp"
 
+
+#define MASK
+
+
 int main(int argc, char** argv)
 {
 	 if (argc != 3) {
@@ -26,7 +30,7 @@ int main(int argc, char** argv)
      
      calculate_counter();
      gen_level_log();
-	 gen_test_log_cpu(time_used, argv[1], "cpu_baseline2", atoi(argv[2]));
+	 gen_test_log_cpu(time_used, argv[1], "non-lock", atoi(argv[2]));
 
      graph_free();
 	 return 0;

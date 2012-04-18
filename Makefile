@@ -2,14 +2,14 @@ AUTHOR = onesuper
 VERSION = 1.0
 DEBUG = -g
 CC0 = g++
-OMPFLAG = -fopenmp
+OMPFLAG = -fopenmp -O3
 CC1 = nvcc
 
 #**************************************
 
 all:	naive cpu
 naive:	naive/naive
-cpu:	cpu/baseline1/baseline1	cpu/baseline2/baseline2 cpu/conflict/conflict
+cpu:	cpu/baseline1/baseline1	cpu/baseline2/baseline2 cpu/conflict/conflict cpu/non-lock/non-lock cpu/rodinia/rodinia
 gpu:	gpu/baseline/baseline
 
 
@@ -17,7 +17,7 @@ gpu:	gpu/baseline/baseline
 
 # naive
 naive/naive: naive/main.cpp
-	$(CC0) naive/main.cpp -o naive/naive -Wall
+	$(CC0) naive/main.cpp -o naive/naive -Wall -O3
 
 
 # cpu
@@ -32,7 +32,11 @@ cpu/baseline2/baseline2: cpu/baseline2/main.cpp
 cpu/conflict/conflict: cpu/conflict/main.cpp
 	$(CC0) cpu/conflict/main.cpp -o cpu/conflict/conflict -Wall $(OMPFLAG)
 
+cpu/non-lock/non-lock: cpu/non-lock/main.cpp
+	$(CC0) cpu/non-lock/main.cpp -o cpu/non-lock/non-lock -Wall $(OMPFLAG)
 
+cpu/rodinia/rodinia: cpu/rodinia/main.cpp
+	$(CC0) cpu/rodinia/main.cpp -o cpu/rodinia/rodinia -Wall $(OMPFLAG)
 
 
 #gpu

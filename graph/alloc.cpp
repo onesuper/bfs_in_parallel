@@ -33,6 +33,9 @@ void graph_read_and_alloc(char* filename)
 	 node_list = (Node*) malloc(sizeof(Node) * num_of_nodes);
 	 color = (int*) malloc(sizeof(int) * num_of_nodes);
 	 cost = (int*) malloc(sizeof(int) * num_of_nodes);
+     visited = (bool*) malloc(sizeof(int) * num_of_nodes);
+     mask = (bool*) malloc(sizeof(bool) * num_of_nodes);
+     updating_mask = (bool*) malloc(sizeof(bool) * num_of_nodes);
 
      // initialize
 	 unsigned int start;
@@ -43,6 +46,11 @@ void graph_read_and_alloc(char* filename)
 		  node_list[i].edge_num = edge_num;
 		  color[i] = WHITE;
 		  cost[i] = INF;
+          visited[i] = false;
+          mask[i] = false;
+          updating_mask[i] = false;
+
+          
 	 }
 
 	 fscanf(fp, "%u", &source_node_no);  // basically it's #0 node
@@ -92,6 +100,9 @@ void graph_free(void)
 	 free(edge_list);
 	 free(color);
 	 free(cost);
+     free(mask);
+     free(visited);
+     free(updating_mask);
 #ifdef CUDA_ENABLE
      free(current_set);
 #endif
