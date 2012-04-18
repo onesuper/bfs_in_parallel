@@ -3,3 +3,6 @@ test_case/*
 *.log
 
 naive/*.log
+
+
+tbb/*

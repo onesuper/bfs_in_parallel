@@ -3,13 +3,14 @@ VERSION = 1.0
 DEBUG = -g
 CC0 = g++
 OMPFLAG = -fopenmp -O3
+TBB = -ltbb
 CC1 = nvcc
 
 #**************************************
 
 all:	naive cpu
 naive:	naive/naive
-cpu:	cpu/baseline1/baseline1	cpu/baseline2/baseline2 cpu/conflict/conflict cpu/non-lock/non-lock cpu/rodinia/rodinia
+cpu:	cpu/baseline1/baseline1	cpu/baseline2/baseline2 cpu/conflict/conflict cpu/non-lock/non-lock cpu/rodinia/rodinia cpu/concurrent/concurrent
 gpu:	gpu/baseline/baseline
 
 
@@ -37,6 +38,10 @@ cpu/non-lock/non-lock: cpu/non-lock/main.cpp
 
 cpu/rodinia/rodinia: cpu/rodinia/main.cpp
 	$(CC0) cpu/rodinia/main.cpp -o cpu/rodinia/rodinia -Wall $(OMPFLAG)
+
+cpu/concurrent/concurrent: cpu/concurrent/main.cpp
+	$(CC0) cpu/concurrent/main.cpp -o cpu/concurrent/concurrent -Wall  $(OMPFLAG) $(TBB)
+ 
 
 
 #gpu
