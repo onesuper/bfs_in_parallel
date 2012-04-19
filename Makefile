@@ -10,7 +10,7 @@ CC1 = nvcc
 
 all:	naive cpu
 naive:	naive/naive
-cpu:	cpu/baseline1/baseline1	cpu/baseline2/baseline2 cpu/conflict/conflict cpu/non-lock/non-lock cpu/rodinia/rodinia cpu/concurrent/concurrent
+cpu:	cpu/baseline1/baseline1	cpu/baseline2/baseline2 cpu/conflict/conflict cpu/non-lock/non-lock cpu/rodinia/rodinia cpu/concurrent/concurrent cpu/concurrent2/concurrent2
 gpu:	gpu/baseline/baseline
 
 
@@ -25,10 +25,8 @@ naive/naive: naive/main.cpp
 cpu/baseline1/baseline1: cpu/baseline1/main.cpp
 	$(CC0) cpu/baseline1/main.cpp -o cpu/baseline1/baseline1 -Wall $(OMPFLAG)
 
-
 cpu/baseline2/baseline2: cpu/baseline2/main.cpp
 	$(CC0) cpu/baseline2/main.cpp -o cpu/baseline2/baseline2 -Wall $(OMPFLAG) 
-
 
 cpu/conflict/conflict: cpu/conflict/main.cpp
 	$(CC0) cpu/conflict/main.cpp -o cpu/conflict/conflict -Wall $(OMPFLAG)
@@ -41,7 +39,9 @@ cpu/rodinia/rodinia: cpu/rodinia/main.cpp
 
 cpu/concurrent/concurrent: cpu/concurrent/main.cpp
 	$(CC0) cpu/concurrent/main.cpp -o cpu/concurrent/concurrent -Wall  $(OMPFLAG) $(TBB)
- 
+
+cpu/concurrent2/concurrent2: cpu/concurrent2/main.cpp
+	$(CC0) cpu/concurrent2/main.cpp -o cpu/concurrent2/concurrent2 -Wall $(OMPFLAG) $(TBB)
 
 
 #gpu

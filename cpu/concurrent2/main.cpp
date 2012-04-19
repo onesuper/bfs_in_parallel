@@ -26,7 +26,7 @@ int main(int argc, char** argv)
      
      calculate_counter();
      gen_level_log();
-	 gen_test_log_cpu(time_used, argv[1], "concurent", atoi(argv[2]));
+	 gen_test_log_cpu(time_used, argv[1], "concurent2", atoi(argv[2]));
 
      graph_free();
 	 return 0;
