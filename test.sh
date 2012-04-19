@@ -8,4 +8,11 @@ cd ../non-lock/
 sh test.sh
 cd ../rodinia/
 sh test.sh
+cd ../concurrent/
+sh test.sh
+cd ../concurrent2/
+sh test.sh
+cd ../concurrent3/
+sh test.sh
+
 

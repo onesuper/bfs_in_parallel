@@ -1,5 +1,5 @@
 
-for i in $(seq 1 100)
+for i in $(seq 1 30)
 
 do
 

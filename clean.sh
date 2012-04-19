@@ -7,4 +7,6 @@ rm cpu/non-lock/non-lock
 rm cpu/rodinia/rodinia
 rm cpu/concurrent/concurrent
 rm cpu/concurrent2/concurrent2
+rm cpu/concurrent3/concurrent3
+rm cpu/bitmap/bitmap
 

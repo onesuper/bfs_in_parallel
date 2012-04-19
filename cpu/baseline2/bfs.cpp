@@ -28,7 +28,7 @@ float bfs(int num_of_threads)
 	 gettimeofday(&start, 0);
 
 	 // visiting the source node now
-	 color[source_node_no] = BLACK;
+	 visited[source_node_no] = true;
 	 current.push_back(source_node_no);
 	 cost[source_node_no] = 0;
 
@@ -58,32 +58,16 @@ float bfs(int num_of_threads)
                {
 					
 					unsigned int id = edge_list[i].dest; // id => node v          
-                    if (color[id] == WHITE) {
-
-                         int its_color;
-
-                         // LockeReadandSet(color[v], BLACK)
-#pragma omp critical
-                         {
-                              if (color[id] == WHITE) {
-                                   its_color = WHITE;
-                                   color[id] = BLACK;      
-                              } else {
-                                   its_color = BLACK;     
-                              }
-                         }
-
-
-                         if (its_color == WHITE) {   //ensure only one thread arrive here
+                    if (visited[id] == false) {
+                         bool its_color = __sync_lock_test_and_set(&visited[id], true);
+                         if (its_color == false) {   
                               cost[id] = cost[index] + 1;
-                              // LockedEnqueue
 #pragma omp critical
                               {    
                                    next.push_back(id);
                               }
                          }
-
-                    } // only if its neighbour is has not been visited
+                    } 
 			   } // end of for each v
 		  } // end of for each u ;barrier here
           current.swap(next);

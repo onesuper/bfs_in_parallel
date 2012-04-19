@@ -40,7 +40,7 @@ outfile = open(name+".dat", 'w')
 
 
 i = 0
-while i < 100:
+while i < 30:
       outfile.write(str(i+1)+' '+str(a[i]*1000) + " "+str(b[i]*1000) + " " + str(c[i]*1000) + " "  + str(d[i]*1000) + '\n')
       i += 1
 

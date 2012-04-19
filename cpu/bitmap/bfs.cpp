@@ -9,11 +9,19 @@ two queues version
 
 #include <omp.h>
 #include <stdio.h>
-#include <deque>
+#include <tbb/concurrent_queue.h>
 #include <sys/time.h>
+
 
 //#define DEBUG
 
+void set_bit(unsigned int num, unsigned long* bitmap) {
+     bitmap[num/32] |= ( 0x80000000 >> num%32);
+}
+
+int test_bit(unsigned int num, unsigned long* bitmap) {
+     return bitmap[num/32] & (0x80000000 >> num%32);
+}
 
 
 
@@ -22,71 +30,99 @@ float bfs(int num_of_threads)
 {
 	 struct timeval start, end;
 	 float time_used;
-	 std::deque<unsigned int> current;
-     std::deque<unsigned int> next;
+	 tbb::concurrent_bounded_queue<unsigned int> current_a;
+     tbb::concurrent_bounded_queue<unsigned int> current_b;
+
+     int map_size = num_of_nodes /32 + 1;
+     unsigned long* bitmap = (unsigned long*) malloc(sizeof(unsigned long)*map_size);
+     for (int i=0; i<map_size; i++) bitmap[i] = 0;
+
+     
 
 	 gettimeofday(&start, 0);
 
 	 // visiting the source node now
-	 color[source_node_no] = BLACK;
-	 current.push_back(source_node_no);
+     set_bit(source_node_no, bitmap);
+	 current_a.push(source_node_no);
 	 cost[source_node_no] = 0;
 
 	 // set threads number
 	 omp_set_num_threads(num_of_threads);
-	 
-	 while(!current.empty()) {
-
-          int parallel_num = current.size();
-
+	 int k = 0;
+     bool stop = false;
+     
+     do {
+          if (k%2 == 0) {
+               int parallel_num = current_a.size();
 // proccess each node in the current queue in parallel
-#pragma omp parallel for shared(current, next, color, cost)
-		  for (int i=0; i<parallel_num; i++) {
-
-               unsigned int index; // index => node u			   
-
-               // LockedDequeue current queue
-#pragma omp critical
-               {       
-                    index = current.front();
-                    current.pop_front();          
-			   }
-			   
-
-               Node cur_node = node_list[index];
-			   for (int i = cur_node.start; i < (cur_node.start+cur_node.edge_num); i++)
-               {
+#pragma omp parallel for shared(current_a, current_b, color, cost)
+               for (int i=0; i<parallel_num; i++) {
+                    unsigned int index; // index => node u
+                    current_a.pop(index);
+                    Node cur_node = node_list[index];
+                    for (int i = cur_node.start; i < (cur_node.start+cur_node.edge_num); i++)
+                    {
 					
-					unsigned int id = edge_list[i].dest; // id => node v          
-                    if (color[id] == WHITE) {
-                         int its_color;
-
-                         // LockeReadandSet(color[v], BLACK)
+                         unsigned int id = edge_list[i].dest; // id => node v          
+                         
+                         if (!test_bit(id, bitmap)) {
+                              bool its_color;
 #pragma omp critical
-                         {
-                              if (color[id] == WHITE) {
-                                   its_color = WHITE;
-                                   color[id] = BLACK;      
-                              } else {
-                                   its_color = BLACK;     
+                              {
+                                   if (test_bit(id, bitmap)) {
+                                        its_color = true;    
+                                   } else {
+                                        its_color = false;
+                                        set_bit(id, bitmap);
+                                   }
+                              }
+
+
+                              if (its_color == false) {
+                                   cost[id] = cost[index] + 1;
+                                   current_b.push(id);
                               }
                          }
+                    } 
+               } 
+               if (current_b.empty()) stop =true; //there's no node in next queue
 
+          } else {
 
-                         if (its_color == WHITE) {   //ensure only one thread arrive here
-                              cost[id] = cost[index] + 1;
-                              // LockedEnqueue
+               int parallel_num = current_b.size();
+// proccess each node in the current queue in parallel
+#pragma omp parallel for shared(current_a, current_b, color, cost)
+               for (int i=0; i<parallel_num; i++) {
+                    unsigned int index; // index => node u
+                    current_b.pop(index);
+                    Node cur_node = node_list[index];
+                    for (int i = cur_node.start; i < (cur_node.start+cur_node.edge_num); i++)
+                    {
+					
+                         unsigned int id = edge_list[i].dest; // id => node v   
+                         bool its_color;
+                         if (!test_bit(id, bitmap)) {
+                              //its_color = __sync_lock_test_and_set(&visited[id], true);
 #pragma omp critical
-                              {    
-                                   next.push_back(id);
+                              {
+                                   if (test_bit(id, bitmap)) {
+                                        its_color = true;    
+                                   } else {
+                                        its_color = false;
+                                        set_bit(id, bitmap);
+                                   }
                               }
-                         } // only if its neighbour is has not been visited
-					}
-			   } // end of for each v
-		  } // end of for each u ;barrier here
-          current.swap(next);
-          next.clear();
-	 } //end of while
+                              if (its_color == false) {
+                                   cost[id] = cost[index] + 1;
+                                   current_a.push(id);
+                              }
+                         }
+                    } 
+               } 
+               if (current_a.empty()) stop =true; //there's no node in next queue
+          }
+          k++;
+	 } while(!stop);
 	 
 
      
@@ -95,7 +131,8 @@ float bfs(int num_of_threads)
 		  end.tv_usec - start.tv_usec;
 	 time_used /= 1000000;
 	 printf("used time: %f\n", time_used);
-	 
+
+     free(bitmap);
 	 return time_used;
 	 
 }

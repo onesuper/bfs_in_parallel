@@ -25,7 +25,7 @@ float bfs(int num_of_threads)
 	 gettimeofday(&start, 0);
 
 	 // visiting the source node now
-	 color[source_node_no] = BLACK;
+	 visited[source_node_no] = true;
 	 current.push(source_node_no);
 	 cost[source_node_no] = 0;
 
@@ -45,8 +45,7 @@ float bfs(int num_of_threads)
                // LockedDequeue current queue
 
                
-               current.pop(index);          
-		
+               current.pop(index);
 			   
 
                Node cur_node = node_list[index];
@@ -54,17 +53,15 @@ float bfs(int num_of_threads)
                {
 					
 					unsigned int id = edge_list[i].dest; // id => node v          
-                    if (color[id] == WHITE) {
-                         color[id] = BLACK;
+                    if (color[id] == false) {
+                         color[id] = true;
                          cost[id] = cost[index] + 1;
                          current.push(id);
                          
-                    } // only if its neighbour is has not been visited
-			   } // end of for each v
-		  } // end of for each u ;barrier here
-          //std::swap(current, next);
-          //next.clear();
-	 } //end of while
+                    } 
+			   } 
+		  } 
+	 } 
 	 
 
      

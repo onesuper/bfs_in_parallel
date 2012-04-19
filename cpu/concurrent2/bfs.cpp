@@ -25,7 +25,7 @@ float bfs(int num_of_threads)
 	 gettimeofday(&start, 0);
 
 	 // visiting the source node now
-	 color[source_node_no] = BLACK;
+	 visited[source_node_no] = true;
 	 current_a.push(source_node_no);
 	 cost[source_node_no] = 0;
 
@@ -47,8 +47,8 @@ float bfs(int num_of_threads)
                     {
 					
                          unsigned int id = edge_list[i].dest; // id => node v          
-                         if (color[id] == WHITE) {
-                              color[id] = BLACK;
+                         if (visited[id] == false) {
+                              visited[id] = true;
                               cost[id] = cost[index] + 1;
                               current_b.push(id);
                          } 
@@ -69,14 +69,14 @@ float bfs(int num_of_threads)
                     {
 					
                          unsigned int id = edge_list[i].dest; // id => node v          
-                         if (color[id] == WHITE) {
-                              color[id] = BLACK;
+                         if (visited[id] == false) {
+                              visited[id] = true;
                               cost[id] = cost[index] + 1;
                               current_a.push(id);
                          } 
                     } 
                } 
-               if (current_a.empty()) stop =true; //there's no node in next queue
+               if (current_a.empty()) stop = true; //there's no node in next queue
           }
           k++;
 	 } while(!stop);

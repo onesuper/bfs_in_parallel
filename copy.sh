@@ -1,4 +1,4 @@
-#scp -r ./cpu chengyichao@lab:~/Code/parrallel_bfs
+scp -r ./cpu chengyichao@lab:~/Code/parrallel_bfs
 
 #scp -r ./tbb chengyichao@lab:~/Code/parrallel_bfs/
 

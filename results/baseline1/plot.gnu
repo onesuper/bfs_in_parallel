@@ -7,19 +7,19 @@ set datafile missing '-'
 set style data linespoints
 set title "CPU Baseline1 with Changing Thread Number"
 
-set xrange [1:100]
-set yrange [0:1200]
+set xrange [0:30]
+set yrange [0:600]
 
 set xlabel "Thread Number"
 set ylabel "Elapsed Time (ms)"
 
-set xtics 10 nomirror
-set ytics 200 nomirror
+set xtics auto 5 nomirror
+set ytics auto 100 nomirror
 
-set mxtics 2
+set mxtics 5
 set mytics 2
 
 
-plot 'baseline1.dat' using 2 t "RGL1", '' using 3 t "IRGL1", '' using 4 t "BAY", '' using 5 t "SW1" 
+plot 'baseline1.dat' using 1:2 t "RGL1", '' using 1:3 t "IRGL1", '' using 1:4 t "BAY", '' using 1:5 t "SW1" 
 
 

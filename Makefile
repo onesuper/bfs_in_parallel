@@ -6,11 +6,12 @@ OMPFLAG = -fopenmp -O3
 TBB = -ltbb
 CC1 = nvcc
 
+
 #**************************************
 
 all:	naive cpu
 naive:	naive/naive
-cpu:	cpu/baseline1/baseline1	cpu/baseline2/baseline2 cpu/conflict/conflict cpu/non-lock/non-lock cpu/rodinia/rodinia cpu/concurrent/concurrent cpu/concurrent2/concurrent2
+cpu:	cpu/baseline1/baseline1	cpu/baseline2/baseline2 cpu/conflict/conflict cpu/non-lock/non-lock cpu/rodinia/rodinia cpu/concurrent/concurrent cpu/concurrent2/concurrent2 cpu/concurrent3/concurrent3 cpu/bitmap/bitmap
 gpu:	gpu/baseline/baseline
 
 
@@ -43,6 +44,11 @@ cpu/concurrent/concurrent: cpu/concurrent/main.cpp
 cpu/concurrent2/concurrent2: cpu/concurrent2/main.cpp
 	$(CC0) cpu/concurrent2/main.cpp -o cpu/concurrent2/concurrent2 -Wall $(OMPFLAG) $(TBB)
 
+cpu/concurrent3/concurrent3: cpu/concurrent3/main.cpp
+	$(CC0) cpu/concurrent3/main.cpp -o cpu/concurrent3/concurrent3 -Wall $(OMPFLAG) $(TBB)
+
+cpu/bitmap/bitmap: cpu/bitmap/main.cpp
+	$(CC0) cpu/bitmap/main.cpp -o cpu/bitmap/bitmap -Wall $(OMPFLAG) $(TBB)
 
 #gpu
 gpu/baseline/baseline: gpu/baseline/main.cu
