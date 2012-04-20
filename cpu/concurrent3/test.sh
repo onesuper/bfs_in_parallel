@@ -1,5 +1,5 @@
 
-for i in $(seq 1 30)
+for i in $(seq 1 10)
 
 do
 
@@ -9,7 +9,7 @@ do
 
 
 # regular
-./concurrent3 ../../test_case/regular/RGL1 $i
+#./concurrent3 ../../test_case/regular/RGL1 $i
 #./concurrent3 ../../test_case/regular/RGL2 $i
 #./concurrent3 ../../test_case/regular/RGL3 $i
 #./concurrent3 ../../test_case/regular/RGL4 $i
@@ -18,11 +18,11 @@ do
 #./concurrent3 ../../test_case/regular/RGL7 $i
 #./concurrent3 ../../test_case/regular/RGL8 $i
 #./concurrent3 ../../test_case/regular/RGL9 $i
-#./concurrent3 ../../test_case/regular/RGL10 $i
+./concurrent3 ../../test_case/regular/RGL10 $i
 
 
 # irregular
-./concurrent3 ../../test_case/irregular/IRGL1 $i
+#./concurrent3 ../../test_case/irregular/IRGL1 $i
 #./concurrent3 ../../test_case/irregular/IRGL2 $i
 #./concurrent3 ../../test_case/irregular/IRGL3 $i
 #./concurrent3 ../../test_case/irregular/IRGL4 $i
@@ -31,12 +31,12 @@ do
 #./concurrent3 ../../test_case/irregular/IRGL7 $i
 #./concurrent3 ../../test_case/irregular/IRGL8 $i
 #./concurrent3 ../../test_case/irregular/IRGL9 $i
-#./concurrent3 ../../test_case/irregular/IRGL10 $i
+./concurrent3 ../../test_case/irregular/IRGL10 $i
 
 
 
 # test by real graph
-./concurrent3 ../../test_case/real_graph/BAY $i
+#./concurrent3 ../../test_case/real_graph/BAY $i
 #./concurrent3 ../../test_case/real_graph/NY $i
 #./concurrent3 ../../test_case/real_graph/COL $i
 #./concurrent3 ../../test_case/real_graph/FLA $i
@@ -47,12 +47,12 @@ do
 #./concurrent3 ../../test_case/real_graph/E $i
 #./concurrent3 ../../test_case/real_graph/W $i
 #./concurrent3 ../../test_case/real_graph/CTR $i
-#./concurrent3 ../../test_case/real_graph/USA $i
+./concurrent3 ../../test_case/real_graph/USA $i
 
 
 # small world
 
-./concurrent3 ../../test_case/small_world/SW1 $i
+#./concurrent3 ../../test_case/small_world/SW1 $i
 #./concurrent3 ../../test_case/small_world/SW2 $i
 #./concurrent3 ../../test_case/small_world/SW3 $i
 #./concurrent3 ../../test_case/small_world/SW4 $i
@@ -61,7 +61,7 @@ do
 #./concurrent3 ../../test_case/small_world/SW7 $i
 #./concurrent3 ../../test_case/small_world/SW8 $i
 #./concurrent3 ../../test_case/small_world/SW9 $i
-#./concurrent3 ../../test_case/small_world/SW10 $i
+./concurrent3 ../../test_case/small_world/SW10 $i
 
 
 done

@@ -2,7 +2,7 @@ AUTHOR = onesuper
 VERSION = 1.0
 DEBUG = -g
 CC0 = g++
-OMPFLAG = -fopenmp -O3
+OMPFLAG = -fopenmp -O2
 TBB = -ltbb
 CC1 = nvcc
 

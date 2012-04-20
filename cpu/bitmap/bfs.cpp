@@ -11,10 +11,12 @@ two queues version
 #include <stdio.h>
 #include <tbb/concurrent_queue.h>
 #include <sys/time.h>
-
+#include "syncbitops.h"
+#include "bitops.h"
 
 //#define DEBUG
 
+/*
 void set_bit(unsigned int num, unsigned long* bitmap) {
      bitmap[num/32] |= ( 0x80000000 >> num%32);
 }
@@ -22,7 +24,7 @@ void set_bit(unsigned int num, unsigned long* bitmap) {
 int test_bit(unsigned int num, unsigned long* bitmap) {
      return bitmap[num/32] & (0x80000000 >> num%32);
 }
-
+*/
 
 
 
@@ -66,7 +68,8 @@ float bfs(int num_of_threads)
                          unsigned int id = edge_list[i].dest; // id => node v          
                          
                          if (!test_bit(id, bitmap)) {
-                              bool its_color;
+                              int its_color = sync_test_and_set_bit(id, bitmap);
+/*
 #pragma omp critical
                               {
                                    if (test_bit(id, bitmap)) {
@@ -76,9 +79,9 @@ float bfs(int num_of_threads)
                                         set_bit(id, bitmap);
                                    }
                               }
+*/
 
-
-                              if (its_color == false) {
+                              if (!its_color) {
                                    cost[id] = cost[index] + 1;
                                    current_b.push(id);
                               }
@@ -100,9 +103,10 @@ float bfs(int num_of_threads)
                     {
 					
                          unsigned int id = edge_list[i].dest; // id => node v   
-                         bool its_color;
+                         
                          if (!test_bit(id, bitmap)) {
-                              //its_color = __sync_lock_test_and_set(&visited[id], true);
+                              int its_color = sync_test_and_set_bit(id, bitmap);
+/*
 #pragma omp critical
                               {
                                    if (test_bit(id, bitmap)) {
@@ -112,10 +116,12 @@ float bfs(int num_of_threads)
                                         set_bit(id, bitmap);
                                    }
                               }
-                              if (its_color == false) {
+*/
+                              if (!its_color) {
                                    cost[id] = cost[index] + 1;
                                    current_a.push(id);
                               }
+
                          }
                     } 
                } 

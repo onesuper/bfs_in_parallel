@@ -2,7 +2,7 @@
 
 import string
 
-name = "concurrent3_2"
+name = "bitmap_2"
 
 file1 = open(name)
 
