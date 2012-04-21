@@ -22,52 +22,40 @@ float bfs(int num_of_threads)
 
 	 gettimeofday(&start, 0);
 
-	 // visiting the source node now
 	 visited[source_node_no] = true;
 	 current.push_back(source_node_no);
 	 cost[source_node_no] = 0;
-
-	 // set threads number
+	
 	 omp_set_num_threads(num_of_threads);
 	 	 
 	 while(!current.empty()) {
 
           int parallel_num = current.size();
-
-// proccess each node in the current queue in parallel
-#pragma omp parallel for shared(current, color, cost)
-		  for (int i=0; i<parallel_num; i++) {
-			   
+#pragma omp parallel for 
+		  for (int j=0; j<parallel_num; j++) {
                unsigned int index;
-
-               // LockedDequeue
 #pragma omp critical
                {
                     index = current.front();
                     current.pop_front();
 			   }
-			   
-
                Node cur_node = node_list[index];
 			   for (int i = cur_node.start; i < (cur_node.start + cur_node.edge_num); i ++)
-               {
-					
-					unsigned int id = edge_list[i].dest; // id => node v
+               {	
+					unsigned int id = edge_list[i].dest;
                     if (visited[id] == false) {
                          bool its_color = __sync_lock_test_and_set(&visited[id], true);
-                         if (its_color == false) {   //ensure only one thread arrive here
+                         if (its_color == false) {
                               cost[id] = cost[index] + 1;                              
 #pragma omp critical                         
                               {
                                    current.push_back(id);
                               }
-                         } // only if its neighbour is has not been visited
-					}
-					
-			   } // end of for
-		  } // end of for
-         
-	 } //end of while
+                         } 
+					}	
+			   } 
+		  }  
+	 } 
 	 
 
 

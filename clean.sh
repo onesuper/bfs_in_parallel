@@ -9,4 +9,5 @@ rm cpu/concurrent/concurrent
 rm cpu/concurrent2/concurrent2
 rm cpu/concurrent3/concurrent3
 rm cpu/bitmap/bitmap
+rm cpu/while/while
 

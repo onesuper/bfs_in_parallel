@@ -11,7 +11,7 @@ CC1 = nvcc
 
 all:	naive cpu
 naive:	naive/naive
-cpu:	cpu/baseline1/baseline1	cpu/baseline2/baseline2 cpu/conflict/conflict cpu/non-lock/non-lock cpu/rodinia/rodinia cpu/concurrent/concurrent cpu/concurrent2/concurrent2 cpu/concurrent3/concurrent3 cpu/bitmap/bitmap
+cpu:	cpu/baseline1/baseline1	cpu/baseline2/baseline2 cpu/conflict/conflict cpu/non-lock/non-lock cpu/rodinia/rodinia cpu/concurrent/concurrent cpu/concurrent2/concurrent2 cpu/concurrent3/concurrent3 cpu/bitmap/bitmap cpu/while/while
 gpu:	gpu/baseline/baseline
 
 
@@ -49,6 +49,10 @@ cpu/concurrent3/concurrent3: cpu/concurrent3/main.cpp
 
 cpu/bitmap/bitmap: cpu/bitmap/main.cpp
 	$(CC0) cpu/bitmap/main.cpp -o cpu/bitmap/bitmap -Wall $(OMPFLAG) $(TBB)
+
+cpu/while/while: cpu/while/main.cpp
+	$(CC0) cpu/while/main.cpp -o cpu/while/while -Wall $(OMPFLAG) $(TBB)
+
 
 #gpu
 gpu/baseline/baseline: gpu/baseline/main.cu

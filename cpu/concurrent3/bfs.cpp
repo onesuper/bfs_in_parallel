@@ -38,7 +38,7 @@ float bfs(int num_of_threads)
           if (k%2 == 0) {
                int parallel_num = current_a.size();
 // proccess each node in the current queue in parallel
-#pragma omp parallel for shared(current_a, current_b, color, cost)
+#pragma omp parallel for shared(current_a, current_b, visited, cost)
                for (int i=0; i<parallel_num; i++) {
                     unsigned int index; // index => node u
                     current_a.pop(index);
@@ -63,7 +63,7 @@ float bfs(int num_of_threads)
 
                int parallel_num = current_b.size();
 // proccess each node in the current queue in parallel
-#pragma omp parallel for shared(current_a, current_b, color, cost)
+#pragma omp parallel for shared(current_a, current_b, visited, cost)
                for (int i=0; i<parallel_num; i++) {
                     unsigned int index; // index => node u
                     current_b.pop(index);
