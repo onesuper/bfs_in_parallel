@@ -31,13 +31,19 @@ unsigned int determine_socket(unsigned int v) {
      return v % 4;
 }
 
+typedef struct pair_t {
+     unsigned int first;
+     unsigned int second;
+} PAIR;
+
+
 float bfs(int num_of_threads) 
 {
 	 struct timeval start, end;
 	 float time_used;
 	 tbb::concurrent_bounded_queue<unsigned int> current_a[4];
      tbb::concurrent_bounded_queue<unsigned int> current_b[4];
-     tbb::concurrent_bounded_queue< std::pair<unsigned int, unsigned int> > socket_queue[4];
+     tbb::concurrent_bounded_queue<PAIR> socket_queue[4];
 
 
 
@@ -65,121 +71,142 @@ float bfs(int num_of_threads)
 	 omp_set_num_threads(num_of_threads);
 	 int k = 0;
      bool stop = false;
-     omp_set_nested(true);
+
 
 
      do {
           if (k%2 == 0) {
-
-               int parallel_num = current_a[0].size() +current_a[1].size()
-                    + current_a[2].size() + current_a[3].size(); 
-#pragma omp parallel for
-               for (int j=0; j<parallel_num; j++) {
-
-                    int socket_no = sched_getcpu();
-                    unsigned int index; 
-                    current_a[socket_no].pop(index);
-                    Node cur_node = node_list[index];
-
-                    for (int i = cur_node.start; i < (cur_node.start+cur_node.edge_num); i++)
+               bool sstop = false;
+               while (!sstop) {
+#parallel omp parallel
                     {
-                         unsigned int id = edge_list[i].dest;
-                         id_belongs_to = determine_socket(id);
-                         if (socket_no == id_belongs_to) {
-                              if (!test_bit(id/4, bitmap[socket_no])) {
-                                   int its_color = sync_test_and_set_bit(id/4, bitmap[socket]);
-                                   if (!its_color) {
-                                        cost[id] = cost[index] + 1;
-                                        current_b[socket_no].push(id);
+                         int socket_no = sched_getcpu();
+                         unsigned int index; 
+                         current_a[socket_no].pop(index);
+                         Node cur_node = node_list[index];
+
+                         for (int i = cur_node.start; i < (cur_node.start+cur_node.edge_num); i++)
+                         {
+                              unsigned int id = edge_list[i].dest;
+                              id_belongs_to = determine_socket(id);
+                              if (socket_no == id_belongs_to) {
+                                   if (!test_bit(id/4, bitmap[socket_no])) {
+                                        int its_color = sync_test_and_set_bit(id/4, bitmap[socket]);
+                                        if (!its_color) {
+                                             cost[id] = cost[index] + 1;
+                                             current_b[socket_no].push(id);
+                                        }
                                    }
+                              } else {
+                                   Pair a_pair;
+                                   a_pair.first = id;
+                                   a_pair.second = index;
+                                   socket_queue[it_belongs_to].push(a_pair);
                               }
-                         } else {
-                              socket_queue[it_belongs_to].push(std::pair(id, index));
                          }
-                    } 
-               }
-               //
-               // barrier here!!!
-               //
-               parallel_num = socket_queue[0].size() + socket_queue[1].size()
-                    + socket_queue[2].size() + socket_queue[3].size();
-
-#pragma omp parallel for
-               for (int j=0; j<parallel_num; j++) {
-
-                    int socket_no = sched_get_cpu();
-                    std::pair a_par;
-                    socket_queue[socket_no].pop(a_pair);
-                    unsigned int index = a_pair.second;
-                    unsigned int id = a_pair.first;
-                    if(!test_bit(id/4, bitmap[socket_no])) {
-                         int its_color = sync_test_and_set_bit(id/4, bitmap[socket_no]);
-                         if (!its_color) {
-                              cost[id] = cost[index] + 1;
-                              current_b[socket_no].push(id);
-                         }
+                         if (current_a[0].empty() && current_a[1].empty() && current_a[2].empty() && current_a[3].empty())
+                              sstop = true;
                     }
                }
-               if (current_b[socket_no].empty()) stop =true; 
+
+               
                //
-               // barrier here!!! 
+               // phase 1 stops ! barrier here!!!
                //
+               
+               sstop =false;
+               while (!sstop) {
+#pragma omp parallel
+                    {
+                  
+                         int socket_no = sched_get_cpu();
+                         PAIR a_pair;
+                         socket_queue[socket_no].pop(a_pair);
+                         unsigned int index = a_pair.second;
+                         unsigned int id = a_pair.first;
+                         if(!test_bit(id/4, bitmap[socket_no])) {
+                              int its_color = sync_test_and_set_bit(id/4, bitmap[socket_no]);
+                              if (!its_color) {
+                                   cost[id] = cost[index] + 1;
+                                   current_b[socket_no].push(id);
+                              }
+                         }
+                         if (socket_queue[0].empty() && socket_queue[1].empty() && socket_queue[2].empty() && socket_queue[3].empty())
+                              sstop = true;
+                    }
+               }
+               //
+               // phase 2 ends ! barrier here!!! 
+               //
+               if (current_b[0].empty() && current_b[1].empty() && current_b[2].empty() && current_b[3].empty()) 
+                    stop = true; 
+
           } else {
 
-               int parallel_num = current_b[0].size() + current_b[1].size() +
-                    current_b[2].size() + current_b[3].size();
-
-#pragma omp parallel for
-               for (int j=0; j<parallel_num; j++) {
-
-                    int socket_no = sched_getcpu();
-                    unsigned int index; 
-                    current_b[socket_no].pop(index);
-                    Node cur_node = node_list[index];
-
-                    for (int i = cur_node.start; i < (cur_node.start+cur_node.edge_num); i++)
+               bool sstop = false;
+               while (!sstop) {
+#parallel omp parallel
                     {
-                         unsigned int id = edge_list[i].dest;
-                         id_belongs_to = determine_socket(id);
-                         if (socket_no == id_belongs_to) {
-                              if (!test_bit(id/4, bitmap[socket_no])) {
-                                   int its_color = sync_test_and_set_bit(id/4, bitmap[socket_no]);
-                                   if (!its_color) {
-                                        cost[id] = cost[index] + 1;
-                                        current_a[socket_no].push(id);
+                         int socket_no = sched_getcpu();
+                         unsigned int index; 
+                         current_b[socket_no].pop(index);
+                         Node cur_node = node_list[index];
+
+                         for (int i = cur_node.start; i < (cur_node.start+cur_node.edge_num); i++)
+                         {
+                              unsigned int id = edge_list[i].dest;
+                              id_belongs_to = determine_socket(id);
+                              if (socket_no == id_belongs_to) {
+                                   if (!test_bit(id/4, bitmap[socket_no])) {
+                                        int its_color = sync_test_and_set_bit(id/4, bitmap[socket]);
+                                        if (!its_color) {
+                                             cost[id] = cost[index] + 1;
+                                             current_a[socket_no].push(id);
+                                        }
                                    }
+                              } else {
+                                   Pair a_pair;
+                                   a_pair.first = id;
+                                   a_pair.second = index;
+                                   socket_queue[it_belongs_to].push(a_pair);
                               }
-                         } else {
-                              socket_queue[it_belongs_to].push(std::pair(id, index));
                          }
-                    } 
-               } 
-               //
-               // barrier here!!!
-               //
-               parallel_num = socket_queue[0].size() + socket_queue[1].size()
-                    + socket_queue[2].size() + socket_queue[3].size();
-
-#pragma omp parallel for
-               for (int j=0; j<parallel_num; j++) {
-
-                    int socket_no = sched_get_cpu();
-                    std::pair a_par;
-                    socket_queue[socket_no].pop(a_pair);
-                    unsigned int index = a_pair.second;
-                    unsigned int id = a_pair.first;
-                    if(!test_bit(id/4, bitmap[socket_no])) {
-                         int its_color = sync_test_and_set_bit(id/4, bitmap[socket_no]);
-                         if (!its_color) {
-                              cost[id] = cost[index] + 1;
-                              current_a[socket_no].push(id);
-                         }
+                         if (current_b[0].empty() && current_b[1].empty() && current_b[2].empty() && current_b[3].empty())
+                              sstop = true;
                     }
                }
-               if (current_a[socket_no].empty()) stop =true;
+
+               
                //
-               // barrier here!!
-               // 
+               // phase 1 stops ! barrier here!!!
+               //
+               
+               sstop =false;
+               while (!sstop) {
+#pragma omp parallel
+                    {
+                  
+                         int socket_no = sched_get_cpu();
+                         PAIR a_pair;
+                         socket_queue[socket_no].pop(a_pair);
+                         unsigned int index = a_pair.second;
+                         unsigned int id = a_pair.first;
+                         if(!test_bit(id/4, bitmap[socket_no])) {
+                              int its_color = sync_test_and_set_bit(id/4, bitmap[socket_no]);
+                              if (!its_color) {
+                                   cost[id] = cost[index] + 1;
+                                   current_a[socket_no].push(id);
+                              }
+                         }
+                         if (socket_queue[0].empty() && socket_queue[1].empty() && socket_queue[2].empty() && socket_queue[3].empty())
+                              sstop = true;
+                    }
+               }
+               //
+               // phase 2 ends ! barrier here!!! 
+               //
+               if (current_a[0].empty() && current_a[1].empty() && current_a[2].empty() && current_a[3].empty()) 
+                    stop = true;          
           }
           k++;
      } while(!stop);
