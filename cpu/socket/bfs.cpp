@@ -15,16 +15,18 @@ two queues version
 #include "bitops.h"
 #include <sched.h>
 
-//#define DEBUG
+
+
+#define DEBUG
 
 /*
-void set_bit(unsigned int num, unsigned long* bitmap) {
-     bitmap[num/32] |= ( 0x80000000 >> num%32);
-}
+  void set_bit(unsigned int num, unsigned long* bitmap) {
+  bitmap[num/32] |= ( 0x80000000 >> num%32);
+  }
 
-int test_bit(unsigned int num, unsigned long* bitmap) {
-     return bitmap[num/32] & (0x80000000 >> num%32);
-}
+  int test_bit(unsigned int num, unsigned long* bitmap) {
+  return bitmap[num/32] & (0x80000000 >> num%32);
+  }
 */
 
 unsigned int determine_socket(unsigned int v) {
@@ -63,8 +65,8 @@ float bfs(int num_of_threads)
 	 gettimeofday(&start, 0);
 
 	 // visiting the source node now
-     set_bit(source_node_no, bitmap);
-	 current_a[determine_socket(source_node)].push(source_node_no);
+     set_bit(source_node_no, bitmap[determine_socket(source_node_no)]);
+	 current_a[determine_socket(source_node_no)].push(source_node_no);
 	 cost[source_node_no] = 0;
 
 	 // set threads number
@@ -72,55 +74,64 @@ float bfs(int num_of_threads)
 	 int k = 0;
      bool stop = false;
 
-
-
+     //int list[16] = {0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3};
+     //cpu_set_t mask;
+     omp_set_nested(true);
      do {
           if (k%2 == 0) {
-               bool sstop = false;
-               while (!sstop) {
-#parallel omp parallel
-                    {
-                         int socket_no = sched_getcpu();
-                         unsigned int index; 
+               
+#pragma omp parallel for 
+               for (int t=0; t<num_of_threads; t++) {
+                    int socket_no = sched_getcpu();
+#ifdef DEBUG
+                    printf("thread %d in socket:%d\n", omp_get_thread_num(), socket_no);
+#endif
+                    int parallel_num = current_a[socket_no].size();
+                    
+//#pragma omp parallel for         
+                    for (int j=0; j<parallel_num; j++ ) {
+                         unsigned int index;
+                         printf("t%d is going to pop\n", omp_get_thread_num());
                          current_a[socket_no].pop(index);
+                         printf("t%d pop out %d\n", omp_get_thread_num(), index);
                          Node cur_node = node_list[index];
-
                          for (int i = cur_node.start; i < (cur_node.start+cur_node.edge_num); i++)
                          {
                               unsigned int id = edge_list[i].dest;
-                              id_belongs_to = determine_socket(id);
-                              if (socket_no == id_belongs_to) {
+                              unsigned int it_belongs_to = determine_socket(id);
+                              if (socket_no == it_belongs_to) {
                                    if (!test_bit(id/4, bitmap[socket_no])) {
-                                        int its_color = sync_test_and_set_bit(id/4, bitmap[socket]);
+                                        int its_color = sync_test_and_set_bit(id/4, bitmap[socket_no]);
                                         if (!its_color) {
                                              cost[id] = cost[index] + 1;
                                              current_b[socket_no].push(id);
                                         }
                                    }
                               } else {
-                                   Pair a_pair;
+                                   PAIR a_pair;
                                    a_pair.first = id;
                                    a_pair.second = index;
                                    socket_queue[it_belongs_to].push(a_pair);
                               }
                          }
-                         if (current_a[0].empty() && current_a[1].empty() && current_a[2].empty() && current_a[3].empty())
-                              sstop = true;
                     }
-               }
+                   
+               } // parallel for I
 
-               
-               //
-               // phase 1 stops ! barrier here!!!
-               //
-               
-               sstop =false;
-               while (!sstop) {
-#pragma omp parallel
-                    {
-                  
-                         int socket_no = sched_get_cpu();
-                         PAIR a_pair;
+
+
+
+#pragma omp parallel for 
+               for (int t=0; t<num_of_threads; t++) {
+                    int socket_no = sched_getcpu();
+#ifdef DEBUG
+                    printf("%d cleaner on thread %d\n", socket_no, omp_get_thread_num());
+#endif
+                    int parallel_num = socket_queue[socket_no].size();
+                    PAIR a_pair;
+
+//#pragma omp parallel for       
+                    for (int j=0; j<parallel_num; j++) {
                          socket_queue[socket_no].pop(a_pair);
                          unsigned int index = a_pair.second;
                          unsigned int id = a_pair.first;
@@ -131,63 +142,82 @@ float bfs(int num_of_threads)
                                    current_b[socket_no].push(id);
                               }
                          }
-                         if (socket_queue[0].empty() && socket_queue[1].empty() && socket_queue[2].empty() && socket_queue[3].empty())
-                              sstop = true;
                     }
+                 
+               } //parallel for II
+
+               if (current_b[0].empty() && current_b[1].empty() && current_b[2].empty() && current_b[3].empty()) stop = true;
+#ifdef DEBUG
+               for(int i=0; i<4; i++) {
+                    printf("%d %d %d\n", current_a[i].size(), current_b[i].size(), socket_queue[i].size());
                }
-               //
-               // phase 2 ends ! barrier here!!! 
-               //
-               if (current_b[0].empty() && current_b[1].empty() && current_b[2].empty() && current_b[3].empty()) 
-                    stop = true; 
+               printf("--------------------------------------\n");
+#endif
+
+
+
 
           } else {
+      
 
-               bool sstop = false;
-               while (!sstop) {
-#parallel omp parallel
+
+
+
+
+#pragma omp parallel
+               for (int t=0; t<num_of_threads; t++) {
+                    int socket_no = sched_getcpu();
+#ifdef DEBUG
+                    printf("thread %d in socket:%d\n", omp_get_thread_num() ,socket_no);
+#endif
+                    unsigned int index;
+                    int parallel_num = current_b[socket_no].size();
+
+//#pragma omp parallel for            
+                    for (int j=0; j<parallel_num; j++)
                     {
-                         int socket_no = sched_getcpu();
-                         unsigned int index; 
                          current_b[socket_no].pop(index);
                          Node cur_node = node_list[index];
-
                          for (int i = cur_node.start; i < (cur_node.start+cur_node.edge_num); i++)
                          {
                               unsigned int id = edge_list[i].dest;
-                              id_belongs_to = determine_socket(id);
-                              if (socket_no == id_belongs_to) {
+                              unsigned int it_belongs_to = determine_socket(id);
+                              if (socket_no == it_belongs_to) {
                                    if (!test_bit(id/4, bitmap[socket_no])) {
-                                        int its_color = sync_test_and_set_bit(id/4, bitmap[socket]);
+                                        int its_color = sync_test_and_set_bit(id/4, bitmap[socket_no]);
                                         if (!its_color) {
                                              cost[id] = cost[index] + 1;
                                              current_a[socket_no].push(id);
                                         }
                                    }
                               } else {
-                                   Pair a_pair;
+                                   PAIR a_pair;
                                    a_pair.first = id;
                                    a_pair.second = index;
                                    socket_queue[it_belongs_to].push(a_pair);
                               }
                          }
-                         if (current_b[0].empty() && current_b[1].empty() && current_b[2].empty() && current_b[3].empty())
-                              sstop = true;
                     }
-               }
+                   
+               } // parallel for I
 
-               
-               //
-               // phase 1 stops ! barrier here!!!
-               //
-               
-               sstop =false;
-               while (!sstop) {
-#pragma omp parallel
-                    {
-                  
-                         int socket_no = sched_get_cpu();
-                         PAIR a_pair;
+
+
+
+
+
+#pragma omp parallel for
+               for (int t=0; t<num_of_threads; t++) {
+                    int socket_no = sched_getcpu();
+#ifdef DEBUG
+                    printf("%d cleaner on thread %d\n", socket_no, omp_get_thread_num());
+#endif
+                    int parallel_num = socket_queue[socket_no].size();
+                    PAIR a_pair;
+
+//#pragma omp parallel for
+                    
+                    for (int j=0; j<parallel_num; j++) {
                          socket_queue[socket_no].pop(a_pair);
                          unsigned int index = a_pair.second;
                          unsigned int id = a_pair.first;
@@ -198,26 +228,29 @@ float bfs(int num_of_threads)
                                    current_a[socket_no].push(id);
                               }
                          }
-                         if (socket_queue[0].empty() && socket_queue[1].empty() && socket_queue[2].empty() && socket_queue[3].empty())
-                              sstop = true;
                     }
+                    
+               }// parallel for II
+
+               if (current_a[0].empty() && current_a[1].empty() && current_a[2].empty() && current_a[3].empty()) stop = true;
+
+#ifdef DEBUG
+               for(int i=0; i<4; i++) {
+                    printf("%d %d %d\n", current_a[i].size(), current_b[i].size(), socket_queue[i].size());
                }
-               //
-               // phase 2 ends ! barrier here!!! 
-               //
-               if (current_a[0].empty() && current_a[1].empty() && current_a[2].empty() && current_a[3].empty()) 
-                    stop = true;          
+               printf("--------------------------------------\n");
+#endif               
           }
+
           k++;
      } while(!stop);
 
-	 gettimeofday(&end, 0);
-	 time_used = 1000000 * (end.tv_sec - start.tv_sec) +
-		  end.tv_usec - start.tv_usec;
-	 time_used /= 1000000;
-	 printf("used time: %f\n", time_used);
-
-     free(bitmap);
-	 return time_used;
+     gettimeofday(&end, 0);
+     time_used = 1000000 * (end.tv_sec - start.tv_sec) +
+          end.tv_usec - start.tv_usec;
+     time_used /= 1000000;
+     printf("used time: %f\n", time_used);
+     for (int i=0; i<4; i++) free(bitmap[i]);
+     return time_used;
 	 
 }

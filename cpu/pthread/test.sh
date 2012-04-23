@@ -1,11 +1,11 @@
 
-for i in $(seq 4 12)
+for i in $(seq 2 10)
 
 do
 
 # test the correctness of socket
 
-./socket ../../test_case/tiny_graph.txt $i
+./socket ../../test_case/tiny_graph.txt 6
 
 
 # regular
