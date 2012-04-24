@@ -5,15 +5,15 @@ CC0 = g++
 OMPFLAG = -fopenmp -O2
 TBB = -ltbb
 CC1 = nvcc
-
+PTHREAD = -lpthread
 
 #**************************************
 
-all:	naive cpu
+all:	naive cpu pthread
 naive:	naive/naive
 cpu:	cpu/baseline1/baseline1	cpu/baseline2/baseline2 cpu/conflict/conflict cpu/non-lock/non-lock cpu/rodinia/rodinia cpu/concurrent/concurrent cpu/concurrent2/concurrent2 cpu/concurrent3/concurrent3 cpu/bitmap/bitmap cpu/socket/socket cpu/sockets/sockets cpu/bitmap_while/bitmap_while
 gpu:	gpu/baseline/baseline
-
+pthread: pthread/baseline/baseline
 
 #*******************************************
 
@@ -60,8 +60,15 @@ cpu/bitmap_while/bitmap_while: cpu/bitmap_while/main.cpp
 	$(CC0) cpu/bitmap_while/main.cpp -o cpu/bitmap_while/bitmap_while -Wall $(OMPFLAG) $(TBB)
 
 
+
+# pthread
+pthread/baseline/baseline: pthread/baseline/main.cpp
+	$(CC0) pthread/baseline/main.cpp -o pthread/baseline/baseline -Wall $(PTHREAD) $(TBB)
+
+
+
 #gpu
-gpu/baseline/baseline: gpu/baseline/main.cu
+gpu/baseline/baseline: gpu/baseline/main.cpp
 	$(CC1) gpu/baseline/main.cu -o gpu/baseline/baseline
 
 

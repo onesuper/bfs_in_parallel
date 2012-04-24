@@ -1,5 +1,5 @@
-scp -r ./cpu chengyichao@lab:~/Code/parrallel_bfs
-
+#scp -r ./cpu chengyichao@lab:~/Code/parrallel_bfs
+scp -r ./pthread chengyichao@lab:~/Code/parrallel_bfs
 #scp -r ./tbb chengyichao@lab:~/Code/parrallel_bfs/
 
 #scp test.sh chengyichao@lab:~/Code/parrallel_bfs/

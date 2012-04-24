@@ -12,3 +12,4 @@ rm cpu/bitmap/bitmap
 rm cpu/socket/socket
 rm cpu/sockets/sockets
 rm cpu/bitmap_while/bitmap_while
+rm pthread/baseline/baseline
