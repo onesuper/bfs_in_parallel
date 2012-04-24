@@ -76,19 +76,19 @@ float bfs(int num_of_threads)
 
      do {
           if (k%2 == 0) {
-               bool sstop = false;
-               while (!sstop) {
+              
+               
 #pragma omp parallel
-                    {
-                         int socket_no = sched_getcpu();
+               {
+                    int socket_no = sched_getcpu();
 #ifdef DEBUG
                     printf("thread %d in socket:%d\n", omp_get_thread_num(), socket_no);
-#endif
-                         unsigned int index; 
-                         if (!current_a[socket_no].empty()) {
-                              current_a[socket_no].pop(index);
+#endif 
+                    while (!current_a[socket_no].empty()) {
+                         unsigned int index = -1; 
+                         current_a[socket_no].try_pop(index);
+                         if (index != -1) {
                               Node cur_node = node_list[index];
-
                               for (int i = cur_node.start; i < (cur_node.start+cur_node.edge_num); i++)
                               {
                                    unsigned int id = edge_list[i].dest;
@@ -109,30 +109,30 @@ float bfs(int num_of_threads)
                                    }
                               }
                          }
-                         if (current_a[0].empty() && current_a[1].empty() && current_a[2].empty() && current_a[3].empty())
-                              sstop = true;
                     }
                }
+               
 
                
                //
                // phase 1 stops ! barrier here!!!
                //
                
-               sstop =false;
-               while (!sstop) {
+
 #pragma omp parallel
-                    {
+               {
                   
-                         int socket_no = sched_getcpu();
+                    int socket_no = sched_getcpu();
 #ifdef DEBUG
-                    printf("thread %d in socket:%d\n", omp_get_thread_num(), socket_no);
+                    printf("thread %d in cleaner:%d\n", omp_get_thread_num(), socket_no);
 #endif
+                    while (!socket_queue[socket_no].empty()) {
                          PAIR a_pair;
-                         if (!socket_queue[socket_no].empty()) {
-                              socket_queue[socket_no].pop(a_pair);
-                              unsigned int index = a_pair.second;
-                              unsigned int id = a_pair.first;
+                         a_pair.first = -1;
+                         socket_queue[socket_no].try_pop(a_pair);
+                         unsigned int index = a_pair.second;
+                         unsigned int id = a_pair.first;
+                         if (id != -1) {
                               if(!test_bit(id/4, bitmap[socket_no])) {
                                    int its_color = sync_test_and_set_bit(id/4, bitmap[socket_no]);
                                    if (!its_color) {
@@ -141,32 +141,37 @@ float bfs(int num_of_threads)
                                    }
                               }
                          }
-                         if (socket_queue[0].empty() && socket_queue[1].empty() && socket_queue[2].empty() && socket_queue[3].empty())
-                              sstop = true;
                     }
                }
+               
                //
                // phase 2 ends ! barrier here!!! 
                //
                if (current_b[0].empty() && current_b[1].empty() && current_b[2].empty() && current_b[3].empty()) 
                     stop = true; 
 
+
+#ifdef DEBUG
+               for(int i=0; i<4; i++) {
+                    printf("%d %d %d\n", current_a[i].size(), current_b[i].size(), socket_queue[i].size());
+               }
+               printf("--------------------------------------\n");
+#endif
+
           } else {
 
-               bool sstop = false;
-               while (!sstop) {
+             
 #pragma omp parallel
-                    {
-                         int socket_no = sched_getcpu();
+               {
+                    int socket_no = sched_getcpu();
 #ifdef DEBUG
                     printf("thread %d in socket:%d\n", omp_get_thread_num(), socket_no);
 #endif
-                         unsigned int index; 
-
-                         if (!current_b[socket_no].empty()) {
-                              current_b[socket_no].pop(index);
+                    while (!current_b[socket_no].empty()) {
+                         unsigned int index = -1;;
+                         current_b[socket_no].try_pop(index);
+                         if (index != -1) {
                               Node cur_node = node_list[index];
-
                               for (int i = cur_node.start; i < (cur_node.start+cur_node.edge_num); i++)
                               {
                                    unsigned int id = edge_list[i].dest;
@@ -187,28 +192,28 @@ float bfs(int num_of_threads)
                                    }
                               }
                          }
-                         if (current_b[0].empty() && current_b[1].empty() && current_b[2].empty() && current_b[3].empty())
-                              sstop = true;
                     }
                }
+               
 
                
                //
                // phase 1 stops ! barrier here!!!
                //
                
-               sstop =false;
-               while (!sstop) {
+         
 #pragma omp parallel
-                    {
+               {
                   
-                         int socket_no = sched_getcpu();
+                    int socket_no = sched_getcpu();
 #ifdef DEBUG
-                    printf("thread %d in socket:%d\n", omp_get_thread_num(), socket_no);
+                    printf("thread %d in cleaner:%d\n", omp_get_thread_num(), socket_no);
 #endif
+                    while (!socket_queue[socket_no].empty()) {
                          PAIR a_pair;
-                         if (!socket_queue[socket_no].empty()) {
-                              socket_queue[socket_no].pop(a_pair);
+                         a_pair.first = -1;
+                         socket_queue[socket_no].try_pop(a_pair);
+                         if (a_pair.first != -1) {
                               unsigned int index = a_pair.second;
                               unsigned int id = a_pair.first;
                               if(!test_bit(id/4, bitmap[socket_no])) {
@@ -219,15 +224,21 @@ float bfs(int num_of_threads)
                                    }
                               }
                          }
-                         if (socket_queue[0].empty() && socket_queue[1].empty() && socket_queue[2].empty() && socket_queue[3].empty())
-                              sstop = true;
                     }
                }
+               
                //
                // phase 2 ends ! barrier here!!! 
                //
                if (current_a[0].empty() && current_a[1].empty() && current_a[2].empty() && current_a[3].empty()) 
-                    stop = true;          
+                    stop = true;    
+
+#ifdef DEBUG
+               for(int i=0; i<4; i++) {
+                    printf("%d %d %d\n", current_a[i].size(), current_b[i].size(), socket_queue[i].size());
+               }
+               printf("--------------------------------------\n");
+#endif      
           }
           k++;
      } while(!stop);
