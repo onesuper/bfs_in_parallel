@@ -31,62 +31,67 @@ float bfs(int num_of_threads)
 
 	 // set threads number
 	 omp_set_num_threads(num_of_threads);
-	 int k = 0;
-     bool stop = false;
      
-     do {
-          if (k%2 == 0) {
-               int parallel_num = current_a.size();
-// proccess each node in the current queue in parallel
-#pragma omp parallel for shared(current_a, current_b, visited, cost)
-               for (int i=0; i<parallel_num; i++) {
-                    unsigned int index; // index => node u
-                    current_a.pop(index);
-                    Node cur_node = node_list[index];
-                    for (int i = cur_node.start; i < (cur_node.start+cur_node.edge_num); i++)
-                    {
-					
-                         unsigned int id = edge_list[i].dest; // id => node v          
-                         bool its_color;
-                         if (visited[id] == false) {
-                              its_color = __sync_lock_test_and_set(&visited[id], true);
-                              if (its_color == false) {
-                                   cost[id] = cost[index] + 1;
-                                   current_b.push(id);
-                              }
-                         }
-                    } 
-               } 
-               if (current_b.empty()) stop =true; //there's no node in next queue
 
-          } else {
+#pragma omp parallel
+     {
 
-               int parallel_num = current_b.size();
-// proccess each node in the current queue in parallel
-#pragma omp parallel for shared(current_a, current_b, visited, cost)
-               for (int i=0; i<parallel_num; i++) {
-                    unsigned int index; // index => node u
-                    current_b.pop(index);
-                    Node cur_node = node_list[index];
-                    for (int i = cur_node.start; i < (cur_node.start+cur_node.edge_num); i++)
-                    {
+          int k = 0;
+          unsigned int index;
+          bool stop = false;
+          do {
+               if (k%2 == 0) {
+                    
+                    while (!current_a.empty()) {
+                         index = -1; 
+                         current_a.try_pop(index); 
+                         if (index != -1) {
+                              Node cur_node = node_list[index];  //printf("%d pop out %d\n", omp_get_thread_num(), index);
+                              for (int i=cur_node.start; i < (cur_node.start+cur_node.edge_num); i++)
+                              {
 					
-                         unsigned int id = edge_list[i].dest; // id => node v   
-                         bool its_color;
-                         if (visited[id] == false) {
-                              its_color = __sync_lock_test_and_set(&visited[id], true);
-                              if (its_color == false) {
-                                   cost[id] = cost[index] + 1;
-                                   current_a.push(id);
-                              }
+                                   unsigned int id = edge_list[i].dest; 
+                                   bool its_color;
+                                   if (visited[id] == false) {
+                                        its_color = __sync_lock_test_and_set(&visited[id], true);
+                                        if (its_color == false) {
+                                             cost[id] = cost[index] + 1;
+                                             current_b.push(id);  // printf("%d push %d\n", omp_get_thread_num(), id);
+                                        }
+                                   }
+                              } 
                          }
-                    } 
-               } 
-               if (current_a.empty()) stop =true; //there's no node in next queue
-          }
-          k++;
-	 } while(!stop);
-	 
+                    }
+               } else {
+                    
+                    
+                    while (!current_b.empty()) {
+                         index = -1; 
+                         current_b.try_pop(index);  
+                         if (index != -1) {
+                              Node cur_node = node_list[index];// printf("%d pop out %d\n", omp_get_thread_num(), index);
+                              for (int i=cur_node.start; i < (cur_node.start+cur_node.edge_num); i++)
+                              {
+					
+                                   unsigned int id = edge_list[i].dest; 
+                                   bool its_color;
+                                   if (visited[id] == false) {
+                                        its_color = __sync_lock_test_and_set(&visited[id], true);
+                                        if (its_color == false) {
+                                             cost[id] = cost[index] + 1;
+                                             current_a.push(id); //printf("%d push %d\n", omp_get_thread_num(), id);
+                                        }
+                                   }
+                              } 
+                         }
+                    }
+               }
+               #pragma omp barrier
+               
+               k++; 
+          } while(!stop);
+
+     }
 
      
 	 gettimeofday(&end, 0);

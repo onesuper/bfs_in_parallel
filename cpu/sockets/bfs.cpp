@@ -74,7 +74,7 @@ float bfs(int num_of_threads)
 
 
      do {
-          if (K%2 ==0) {
+          if (k%2 ==0) {
 #pragma omp parallel
                {
                     int socket_no = sched_getcpu();

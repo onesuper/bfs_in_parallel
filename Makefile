@@ -5,7 +5,7 @@ CC0 = g++
 OMPFLAG = -fopenmp -O2
 TBB = -ltbb
 CC1 = nvcc
-PTHREAD = -lpthread
+PTHREAD = -lpthread -O3
 
 #**************************************
 

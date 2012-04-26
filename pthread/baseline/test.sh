@@ -1,11 +1,11 @@
 
-for i in $(seq 1 20)
+for i in $(seq 4 20)
 
 do
 
 # test the correctness of baseline
 
-#./baseline ../../test_case/tiny_graph $i
+./baseline ../../test_case/tiny_graph $i
 
 
 # regular

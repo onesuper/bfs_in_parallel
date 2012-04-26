@@ -2,7 +2,7 @@
 
 import string
 
-name = "bitmap2"
+name = "baseline2"
 
 file1 = open(name)
 
