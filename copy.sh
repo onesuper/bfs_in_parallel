@@ -8,5 +8,5 @@ scp -r ./pthread chengyichao@lab:~/Code/parrallel_bfs
 #scp -r ./graph chengyichao@lab:~/Code/parrallel_bfs/ 
 
 
-#scp  ./Makefile chengyichao@lab:~/Code/parrallel_bfs/ 
-#scp ./clean.sh chengyichao@lab:~/Code/parrallel_bfs/
+scp  ./Makefile chengyichao@lab:~/Code/parrallel_bfs/ 
+scp ./clean.sh chengyichao@lab:~/Code/parrallel_bfs/

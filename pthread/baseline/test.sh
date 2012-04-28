@@ -1,11 +1,11 @@
 
-for i in $(seq 4 20)
+for i in 1, 2, 4, 8, 16
 
 do
 
 # test the correctness of baseline
 
-./baseline ../../test_case/tiny_graph $i
+#./baseline ../../test_case/tiny_graph $i
 
 
 # regular
@@ -22,7 +22,7 @@ do
 
 
 # irregular
-./baseline ../../test_case/irregular/IRGL1 $i
+#./baseline ../../test_case/irregular/IRGL1 $i
 #./baseline ../../test_case/irregular/IRGL2 $i
 #./baseline ../../test_case/irregular/IRGL3 $i
 #./baseline ../../test_case/irregular/IRGL4 $i
@@ -36,7 +36,7 @@ do
 
 
 # test by real graph
-./baseline ../../test_case/real_graph/BAY $i
+#./baseline ../../test_case/real_graph/BAY $i
 #./baseline ../../test_case/real_graph/NY $i
 #./baseline ../../test_case/real_graph/COL $i
 #./baseline ../../test_case/real_graph/FLA $i
@@ -52,7 +52,7 @@ do
 
 # small world
 
-./baseline ../../test_case/small_world/SW1 $i
+#./baseline ../../test_case/small_world/SW1 $i
 #./baseline ../../test_case/small_world/SW2 $i
 #./baseline ../../test_case/small_world/SW3 $i
 #./baseline ../../test_case/small_world/SW4 $i
