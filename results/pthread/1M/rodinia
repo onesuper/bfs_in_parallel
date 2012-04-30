@@ -1,0 +1,21 @@
+rodinia ../test_case/regular/RGL1   1048576 6283266 1023    3.151416    1
+rodinia ../test_case/irregular/IRGL1    1049600 8380418 1024    3.057386    1
+rodinia ../test_case/real_graph/BAY 321270  800172  522 0.501482    1
+rodinia ../test_case/small_world/SW1    1000000 5999996 10  0.168036    1
+rodinia ../test_case/regular/RGL1   1048576 6283266 1023    2.355509    2
+rodinia ../test_case/irregular/IRGL1    1049600 8380418 1024    2.297541    2
+rodinia ../test_case/real_graph/BAY 321270  800172  522 0.373783    2
+rodinia ../test_case/small_world/SW1    1000000 5999996 10  0.101076    2
+rodinia ../test_case/regular/RGL1   1048576 6283266 1023    1.944801    4
+rodinia ../test_case/irregular/IRGL1    1049600 8380418 1024    1.918641    4
+rodinia ../test_case/real_graph/BAY 321270  800172  522 0.312664    4
+rodinia ../test_case/small_world/SW1    1000000 5999996 10  0.070434    4
+rodinia ../test_case/regular/RGL1   1048576 6283266 1023    2.721158    8
+rodinia ../test_case/irregular/IRGL1    1049600 8380418 1024    2.729253    8
+rodinia ../test_case/real_graph/BAY 321270  800172  522 0.566078    8
+rodinia ../test_case/small_world/SW1    1000000 5999996 10  0.080681    8
+rodinia ../test_case/regular/RGL1   1048576 6283266 1023    2.728519    16
+rodinia ../test_case/irregular/IRGL1    1049600 8380418 1024    2.706678    16
+rodinia ../test_case/real_graph/BAY 321270  800172  522 0.612079    16
+rodinia ../test_case/small_world/SW1    1000000 5999996 10  0.076763    16
+

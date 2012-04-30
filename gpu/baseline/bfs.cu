@@ -9,14 +9,12 @@ bfs algorithm implemented by CUDA without any optimization.
 
 #include <cuda.h>
 #include <stdio.h>
-//#include <deque>
+
 #include <sys/time.h>
 
-
-#define BLOCK_IN_A_GRID 80
+#define MAX_THREAD_PER_BLOCK 1024
+#define LARDGE_CURRENT_SIZE 5000
 #define THREAD_PER_BLOCK 64
-#define MAX_THREAD_PER_BLOCK 256
-
 
 /*
  the method is a little different with the naive one
@@ -33,33 +31,25 @@ __global__ static void bfs_kernel(unsigned int* current_set, unsigned int* new_s
      int tid = blockIdx.x * blockDim.x + threadIdx.x;
      *current_set_size_new = 0;  // at first the current set must be empty
      
-     if (tid < current_set_size) {  // the rest threads take a rest
-
+     for(int j=tid; j<current_set_size; j+=blockDim.x*gridDim.x) [
           unsigned int index = current_set[tid];// fetch one from the current set
-          current_set[tid] = 0;                 // erase it        
-          
+          current_set[tid] = 0;                 // erase it
           d_cost[index] = level;
-
           Node cur_node = node_list[index];
-          for (int i = cur_node.start; i < cur_node.start + cur_node.edge_num; i++)
+          for (int i=cur_node.start; i < cur_node.start + cur_node.edge_num; i++)
           {
                unsigned int id = edge_list[i].dest;
-
-               // use the atomic operation to prevent confliction
-               // there is only one chance to increase the length
-               // current set
                int its_color = atomicExch((int*) &color[id], BLACK);
                if (its_color == WHITE) {
                     int write_position = atomicAdd((int*) &(*current_set_size_new), 1);
                     new_set[write_position] = id;
                }
           }
-          
      }
 }
 
 
-float bfs() 
+float bfs(int block_in_a_grid) 
 {
 	 struct timeval start, end;
 	 float time_used;
@@ -75,9 +65,12 @@ float bfs()
      cudaMemcopy(d_current_set_a, current_set, sizeof(unsigned int) * num_of_nodes,
                  cudaMemcpyHostToDevice);
      cudaMemcopy(d_cost, cost, sizeof(int) * num_of_nodes, cudaMemcpyHostToDevice); 
+
+
      int current_set_size = 1;          // only source node in it     
-     int block_num = BLOCK_IN_A_GRID;
+     int block_num = block_in_a_grid;
      int thread_num = THREAD_PER_BLOCK;
+
 
      int level = 0;                     // used to control the current_set_a/b to visit
 	 while(current_set_size != 0) {

@@ -1,18 +1,25 @@
-cd cpu/baseline1/
-sh test.sh
-cd ../baseline2/
-sh test.sh
-cd ../conflict/
-sh test.sh
-cd ../non-lock/
-sh test.sh
-cd ../rodinia/
-sh test.sh
-cd ../concurrent/
-sh test.sh
-cd ../concurrent2/
-sh test.sh
-cd ../concurrent3/
+
+cd naive
 sh test.sh
 
 
+
+cd ../pthread
+
+
+cd baseline
+sh test.sh
+
+cd ../bitmap
+sh test.sh
+
+cd ../batch
+sh test.sh
+
+cd ../check
+sh test.sh
+
+cd ../channel
+sh test1.sh
+sh test2.sh
+sh test4.sh

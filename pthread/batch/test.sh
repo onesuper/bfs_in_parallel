@@ -18,7 +18,7 @@ do
 #./batch ../../test_case/regular/RGL7 $i
 #./batch ../../test_case/regular/RGL8 $i
 #./batch ../../test_case/regular/RGL9 $i
-#./batch ../../test_case/regular/RGL10 $i
+./batch ../../test_case/regular/RGL10 $i
 
 
 # irregular
@@ -31,7 +31,7 @@ do
 #./batch ../../test_case/irregular/IRGL7 $i
 #./batch ../../test_case/irregular/IRGL8 $i
 #./batch ../../test_case/irregular/IRGL9 $i
-#./batch ../../test_case/irregular/IRGL10 $i
+./batch ../../test_case/irregular/IRGL10 $i
 
 
 
@@ -47,12 +47,12 @@ do
 #./batch ../../test_case/real_graph/E $i
 #./batch ../../test_case/real_graph/W $i
 #./batch ../../test_case/real_graph/CTR $i
-#./batch ../../test_case/real_graph/USA $i
+./batch ../../test_case/real_graph/USA $i
 
 
 # small world
 
-./batch ../../test_case/small_world/SW1 $i
+#./batch ../../test_case/small_world/SW1 $i
 #./batch ../../test_case/small_world/SW2 $i
 #./batch ../../test_case/small_world/SW3 $i
 #./batch ../../test_case/small_world/SW4 $i
@@ -61,7 +61,7 @@ do
 #./batch ../../test_case/small_world/SW7 $i
 #./batch ../../test_case/small_world/SW8 $i
 #./batch ../../test_case/small_world/SW9 $i
-#./batch ../../test_case/small_world/SW10 $i
+./batch ../../test_case/small_world/SW10 $i
 
 
 done

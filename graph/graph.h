@@ -54,22 +54,13 @@ Edge* edge_list;
 int* color;
 int* cost;
 int* counter;
-unsigned int* current_set;       /* used in GPU version because CUDA doesn't support heap variable */
-int* current_set_size_new;      /* let cpu know the size of current_size */
+
 bool* visited;
 bool* mask;
 bool* updating_mask;
 
 
-/* pointing to device  FOR CUDA */
-Node* d_node_list;
-Edge* d_edge_list;
-int* d_color;
-int* d_cost;
-int* d_counter;
-unsigned int* d_current_set_a;    
-unsigned int* d_current_set_b;
-int* d_current_set_size_new;
+
 
 
 /********************************************/

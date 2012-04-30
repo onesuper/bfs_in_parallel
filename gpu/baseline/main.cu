@@ -14,15 +14,25 @@ a baseline parallel bfs implementation using CUDA
 #include <math.h>
 #include "bfs.cpp"
 
-#define MAX_THREADS_PER_BLOCK 512
+unsigned int* current_set;      
+int* current_set_size_new;      
 
 
-#define CUDA_ENABLE
+Node* d_node_list;
+Edge* d_edge_list;
+int* d_color;
+int* d_cost;
+int* d_counter;
+unsigned int* d_current_set_a;    
+unsigned int* d_current_set_b;
+int* d_current_set_size_new;
+
+
 
 int main(int argc, char** argv)
 {
-	 if (argc != 2) {
-		  printf("please give the path of the graph.\n");
+	 if (argc != 3) {
+		  printf("please give the path of the graph and the block_num.\n");
 		  return -1;
 	 }
 	 if (init_cuda()) {
@@ -31,12 +41,26 @@ int main(int argc, char** argv)
 	 printf("CUDA has been initialized.\n");
 
 	 graph_read_and_alloc(argv[1]);     //CPU alloc
+
+
+     
+     // more alloc
+     current_set = (unsigned int*) malloc(sizeof(unsigned int) * num_of_nodes);
+     for (int i=0; i<num_of_nodes; i++) {
+          current_set[i] = INF;
+     }
+     current_set_size_new = (int*) malloc(sizeof(int));
+     *current_set_size_new = 0;
+
 	 device_alloc_and_copy();           //GPU alloc
-	 float time_used = bfs();
+	 float time_used = bfs(atoi(argv[2]));
 	 calculate_counter();
 	 gen_level_log();
 	 gen_test_log(time_used, argv[1], "gpu_baseline");
 	 device_free();             //CPU free
 	 graph_free();              //GPU free
+     //more free
+     free(current_set);
+     free(current_set_size_new);
 	 return 0;
 }

@@ -79,15 +79,7 @@ void graph_read_and_alloc(char* filename)
 		  counter[i] = 0;
 	 }
 
-// CPU version use the std:queue instead
-#ifdef CUDA_ENABLE
-     current_set = (unsigned int*) malloc(sizeof(unsigned int) * num_of_nodes);
-     for (int i=0; i<num_of_nodes; i++) {
-          current_set[i] = INF;
-     }
-     current_set_size_new = (int*) malloc(sizeof(int));
-     *current_set_size_new = 0;
-#endif
+
 
 	 
 	 fclose(fp);
@@ -103,9 +95,7 @@ void graph_free(void)
      free(mask);
      free(visited);
      free(updating_mask);
-#ifdef CUDA_ENABLE
-     free(current_set);
-#endif
+
      return;
 	 
 }

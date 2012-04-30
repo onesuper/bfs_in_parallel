@@ -1,0 +1,35 @@
+naive	../test_case/real_graph/BAY	321270	800172	522	0.021957
+rodinia ../test_case/real_graph/BAY 321270  800172  522 0.501482    1
+pthread_baseline	../../test_case/real_graph/BAY	321270	800172	522	0.045666	1
+pthread_bitmap	../../test_case/real_graph/BAY	321270	800172	522	0.045495	1
+pthread_batch	../../test_case/real_graph/BAY	321270	800172	522	0.047371	1
+pthread_check	../../test_case/real_graph/BAY	321270	800172	522	0.047496	1
+pthread_channel	../../test_case/real_graph/BAY	321270	800172	522	0.050535	1
+naive	../test_case/real_graph/BAY	321270	800172	522	0.021957
+rodinia ../test_case/real_graph/BAY 321270  800172  522 0.373783    2
+pthread_baseline	../../test_case/real_graph/BAY	321270	800172	522	0.050816	2
+pthread_bitmap	../../test_case/real_graph/BAY	321270	800172	522	0.048755	2
+pthread_batch	../../test_case/real_graph/BAY	321270	800172	522	0.052632	2
+pthread_check	../../test_case/real_graph/BAY	321270	800172	522	0.051414	2
+pthread_channel	../../test_case/real_graph/BAY	321270	800172	522	0.060871	2
+naive	../test_case/real_graph/BAY	321270	800172	522	0.021957
+rodinia ../test_case/real_graph/BAY 321270  800172  522 0.312664    4
+pthread_baseline	../../test_case/real_graph/BAY	321270	800172	522	0.053655	4
+pthread_bitmap	../../test_case/real_graph/BAY	321270	800172	522	0.053367	4
+pthread_batch	../../test_case/real_graph/BAY	321270	800172	522	0.056010	4
+pthread_check	../../test_case/real_graph/BAY	321270	800172	522	0.055470	4
+pthread_channel	../../test_case/real_graph/BAY	321270	800172	522	0.055908	4
+naive	../test_case/real_graph/BAY	321270	800172	522	0.021957
+rodinia ../test_case/real_graph/BAY 321270  800172  522 0.566078    8
+pthread_baseline	../../test_case/real_graph/BAY	321270	800172	522	0.129462	8
+pthread_bitmap	../../test_case/real_graph/BAY	321270	800172	522	0.118989	8
+pthread_batch	../../test_case/real_graph/BAY	321270	800172	522	0.091479	8
+pthread_check	../../test_case/real_graph/BAY	321270	800172	522	0.088330	8
+pthread_channel	../../test_case/real_graph/BAY	321270	800172	522	0.092064	8
+naive	../test_case/real_graph/BAY	321270	800172	522	0.021957
+rodinia ../test_case/real_graph/BAY 321270  800172  522 0.612079    16
+pthread_baseline	../../test_case/real_graph/BAY	321270	800172	522	0.175992	16
+pthread_bitmap	../../test_case/real_graph/BAY	321270	800172	522	0.166196	16
+pthread_batch	../../test_case/real_graph/BAY	321270	800172	522	0.068796	16
+pthread_check	../../test_case/real_graph/BAY	321270	800172	522	0.084264	16
+pthread_channel	../../test_case/real_graph/BAY	321270	800172	522	0.215212	16

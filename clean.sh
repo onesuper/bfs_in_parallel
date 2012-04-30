@@ -1,5 +1,6 @@
 git rm ./*~
 rm naive/naive
+
 rm cpu/baseline1/baseline1
 rm cpu/baseline2/baseline2
 rm cpu/conflict/conflict
@@ -12,7 +13,9 @@ rm cpu/bitmap/bitmap
 rm cpu/socket/socket
 rm cpu/sockets/sockets
 rm cpu/bitmap_while/bitmap_while
+
 rm pthread/baseline/baseline
 rm pthread/bitmap/bitmap
 rm pthread/batch/batch
 rm pthread/check/check
+rm pthread/channel/channel

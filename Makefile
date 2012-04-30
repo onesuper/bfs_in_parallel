@@ -6,14 +6,16 @@ OMPFLAG = -fopenmp -O2
 TBB = -ltbb
 CC1 = nvcc
 PTHREAD = -lpthread -O3
-
+CUFLAG1 = -lcuda -lcutil_x86_64 -L/home/liugu/NVIDIA_GPU_Computing_SDK/C/lib
+CUFLAG2 = -I/home/liugu/NVIDIA_GPU_Computing_SDK/C/common/inc -O3 -Xcompiler "-m32" -Xptxas -dlcm=cg -arch sm_20
 #**************************************
 
-all:	naive cpu pthread
+all:	naive pthread 
 naive:	naive/naive
 cpu:	cpu/baseline1/baseline1	cpu/baseline2/baseline2 cpu/conflict/conflict cpu/non-lock/non-lock cpu/rodinia/rodinia cpu/concurrent/concurrent cpu/concurrent2/concurrent2 cpu/concurrent3/concurrent3 cpu/bitmap/bitmap cpu/socket/socket cpu/sockets/sockets cpu/bitmap_while/bitmap_while
 gpu:	gpu/baseline/baseline
-pthread: pthread/baseline/baseline pthread/bitmap/bitmap pthread/batch/batch pthread/check/check
+pthread: pthread/baseline/baseline pthread/bitmap/bitmap pthread/batch/batch pthread/check/check pthread/channel/channel
+
 
 #*******************************************
 
@@ -74,10 +76,19 @@ pthread/batch/batch: pthread/batch/main.cpp
 pthread/check/check: pthread/check/main.cpp
 	$(CC0) pthread/check/main.cpp -o pthread/check/check -Wall $(PTHREAD) $(TBB)
 
+pthread/channel/channel: pthread/channel/main.cpp
+	$(CC0) pthread/channel/main.cpp -o pthread/channel/channel -Wall $(PTHREAD) $(TBB)
+
+
 
 #gpu
-gpu/baseline/baseline: gpu/baseline/main.cpp
-	$(CC1) gpu/baseline/main.cu -o gpu/baseline/baseline
+gpu/baseline/baseline: gpu/baseline/main.o
+	$(CC1) -o gpu/baseline/baseline gpu/baseline/main.o $(CUFLAG1)
+
+
+gpu/baseline/main.o: gpu/baseline/main.cu
+	$(CC1) gpu/baseline/main.cu  $(CUFLAG2)  -c -o main.o 
+
 
 
 

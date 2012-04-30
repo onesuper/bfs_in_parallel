@@ -158,7 +158,7 @@ float bfs(int num_of_threads)
 		  end.tv_usec - start.tv_usec;
 	 time_used /= 1000000;
 	 printf("used time: %f\n", time_used);
-
+     free(bitmap);
 	 return time_used;
 	 
 }
