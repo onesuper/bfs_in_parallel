@@ -13,8 +13,7 @@ bfs algorithm implemented by CUDA without any optimization.
 #include <sys/time.h>
 
 #define MAX_THREAD_PER_BLOCK 1024
-#define LARDGE_CURRENT_SIZE 5000
-#define THREAD_PER_BLOCK 64
+#define THREAD_PER_BLOCK 128
 
 /*
  the method is a little different with the naive one
@@ -23,18 +22,21 @@ bfs algorithm implemented by CUDA without any optimization.
 
  */
 
+
+
+
 __global__ static void bfs_kernel(unsigned int* current_set, unsigned int* new_set,
-                                  int* current_set_size, int* current_set_size_new,
+                                  int current_set_size, int* current_set_size_new, 
                                   Node* node_list, Edge* edge_list, int* color, int* cost, int level)
 {
 	
      int tid = blockIdx.x * blockDim.x + threadIdx.x;
-     *current_set_size_new = 0;  // at first the current set must be empty
+   
      
-     for(int j=tid; j<current_set_size; j+=blockDim.x*gridDim.x) [
-          unsigned int index = current_set[tid];// fetch one from the current set
-          current_set[tid] = 0;                 // erase it
-          d_cost[index] = level;
+     for(int j=tid; j<current_set_size; j+=blockDim.x*gridDim.x) {
+          unsigned int index = current_set[j];// fetch one from the current set
+          current_set[j] = 0;                 // erase it
+          cost[index] = level;
           Node cur_node = node_list[index];
           for (int i=cur_node.start; i < cur_node.start + cur_node.edge_num; i++)
           {
@@ -43,6 +45,8 @@ __global__ static void bfs_kernel(unsigned int* current_set, unsigned int* new_s
                if (its_color == WHITE) {
                     int write_position = atomicAdd((int*) &(*current_set_size_new), 1);
                     new_set[write_position] = id;
+                   
+                    
                }
           }
      }
@@ -61,10 +65,14 @@ float bfs(int block_in_a_grid)
 	 cost[source_node_no] = 0;
 	 
      // synchronize to GPU mem
-     cudaMemcopy(d_cost, cost, sizeof(int) * num_of_nodes, cudaMemcpyHostToDevice);
-     cudaMemcopy(d_current_set_a, current_set, sizeof(unsigned int) * num_of_nodes,
-                 cudaMemcpyHostToDevice);
-     cudaMemcopy(d_cost, cost, sizeof(int) * num_of_nodes, cudaMemcpyHostToDevice); 
+     cudaMemcpy(d_color, color, sizeof(int) * num_of_nodes, cudaMemcpyHostToDevice);
+     cudaMemcpy(d_current_set_a, current_set, sizeof(unsigned int) * num_of_nodes, cudaMemcpyHostToDevice);
+     cudaMemcpy(d_cost, cost, sizeof(int) * num_of_nodes, cudaMemcpyHostToDevice); 
+
+
+     //cudaMemset(d_color, BLACK, sizeof(int));
+     //cudaMemset(d_current_set_a[0], source_node_no, sizeof(unsigned int));
+     //cudaMemset(d_cost[source_node_no], 0, sizeof(int));
 
 
      int current_set_size = 1;          // only source node in it     
@@ -75,29 +83,28 @@ float bfs(int block_in_a_grid)
      int level = 0;                     // used to control the current_set_a/b to visit
 	 while(current_set_size != 0) {
           if (level%2 == 0) {
-               bfs_kernel<<<block_num, thread_num>>>(d_current_set_a, d_current_set_b,
-                                                     current_set_size, d_current_set_size_new,
+               cudaMemset(d_current_set_size_new, 0, sizeof(int));
+               bfs_kernel<<<block_num, thread_num>>>(d_current_set_a, d_current_set_b, current_set_size, d_current_set_size_new,
                                                      d_node_list, d_edge_list, d_color, d_cost, level);
                cudaThreadSynchronize();
-               // update the size of current_size after adding nodes to current set
-               cudaMemcpy(current_set_size_new, d_current_set_size_new,
-                          sizeof(int), cudaMemcpyDeviceToHost);
+               cudaMemcpy(current_set_size_new, d_current_set_size_new, sizeof(int), cudaMemcpyDeviceToHost);
                current_set_size = *current_set_size_new; 
+               
           } else {
-               bfs_kernel<<<block_num, thread_num>>>(d_current_set_b, d_current_set_a,
-                                                     current_set_size, d_current_set_size_new,
+
+               cudaMemset(d_current_set_size_new, 0, sizeof(int));
+               bfs_kernel<<<block_num, thread_num>>>(d_current_set_b, d_current_set_a, current_set_size, d_current_set_size_new,
                                                      d_node_list, d_edge_list, d_color, d_cost, level);
                cudaThreadSynchronize();
-               // update the size of current_size after adding nodes to current set
-               cudaMemcpy(current_set_size_new, de_current_set_size_new,
-                          sizeof(int), cudaMemcpyDeviceToHost);
+               cudaMemcpy(current_set_size_new, d_current_set_size_new, sizeof(int), cudaMemcpyDeviceToHost);
                current_set_size = *current_set_size_new;
+               
           }
           level++;
 	 }
 
      // copy the result from GPU to CPU mem
-     cudaMemcopy(cost, d_cost, sizeof(unsigned int)*num_of_nodes, cudaMemcpyDeviceToHost);
+     cudaMemcpy(cost, d_cost, sizeof(unsigned int)*num_of_nodes, cudaMemcpyDeviceToHost);
 
      // come out the time
 	 gettimeofday(&end, 0);

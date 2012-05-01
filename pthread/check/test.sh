@@ -13,12 +13,12 @@ do
 #./check ../../test_case/regular/RGL2 $i
 #./check ../../test_case/regular/RGL3 $i
 #./check ../../test_case/regular/RGL4 $i
-#./check ../../test_case/regular/RGL5 $i
+./check ../../test_case/regular/RGL5 $i
 #./check ../../test_case/regular/RGL6 $i
 #./check ../../test_case/regular/RGL7 $i
 #./check ../../test_case/regular/RGL8 $i
 #./check ../../test_case/regular/RGL9 $i
-./check ../../test_case/regular/RGL10 $i
+#./check ../../test_case/regular/RGL10 $i
 
 
 # irregular
@@ -26,12 +26,12 @@ do
 #./check ../../test_case/irregular/IRGL2 $i
 #./check ../../test_case/irregular/IRGL3 $i
 #./check ../../test_case/irregular/IRGL4 $i
-#./check ../../test_case/irregular/IRGL5 $i
+./check ../../test_case/irregular/IRGL5 $i
 #./check ../../test_case/irregular/IRGL6 $i
 #./check ../../test_case/irregular/IRGL7 $i
 #./check ../../test_case/irregular/IRGL8 $i
 #./check ../../test_case/irregular/IRGL9 $i
-./check ../../test_case/irregular/IRGL10 $i
+#./check ../../test_case/irregular/IRGL10 $i
 
 
 
@@ -40,14 +40,14 @@ do
 #./check ../../test_case/real_graph/NY $i
 #./check ../../test_case/real_graph/COL $i
 #./check ../../test_case/real_graph/FLA $i
-#./check ../../test_case/real_graph/CAL $i
+./check ../../test_case/real_graph/CAL $i
 #./check ../../test_case/real_graph/NE $i
 #./check ../../test_case/real_graph/NW $i
 #./check ../../test_case/real_graph/LKS $i
 #./check ../../test_case/real_graph/E $i
 #./check ../../test_case/real_graph/W $i
 #./check ../../test_case/real_graph/CTR $i
-./check ../../test_case/real_graph/USA $i
+#./check ../../test_case/real_graph/USA $i
 
 
 # small world
@@ -56,12 +56,12 @@ do
 #./check ../../test_case/small_world/SW2 $i
 #./check ../../test_case/small_world/SW3 $i
 #./check ../../test_case/small_world/SW4 $i
-#./check ../../test_case/small_world/SW5 $i
+./check ../../test_case/small_world/SW5 $i
 #./check ../../test_case/small_world/SW6 $i
 #./check ../../test_case/small_world/SW7 $i
 #./check ../../test_case/small_world/SW8 $i
 #./check ../../test_case/small_world/SW9 $i
-./check ../../test_case/small_world/SW10 $i
+#./check ../../test_case/small_world/SW10 $i
 
 
 done

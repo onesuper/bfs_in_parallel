@@ -12,7 +12,7 @@ a baseline parallel bfs implementation using CUDA
 #include "./../cuda.cu"
 #include <stdlib.h>
 #include <math.h>
-#include "bfs.cpp"
+#include "bfs.cu"
 
 unsigned int* current_set;      
 int* current_set_size_new;      
@@ -35,7 +35,7 @@ int main(int argc, char** argv)
 		  printf("please give the path of the graph and the block_num.\n");
 		  return -1;
 	 }
-	 if (init_cuda()) {
+	 if (!init_cuda()) {
 		  return -1;
 	 }
 	 printf("CUDA has been initialized.\n");
@@ -56,7 +56,7 @@ int main(int argc, char** argv)
 	 float time_used = bfs(atoi(argv[2]));
 	 calculate_counter();
 	 gen_level_log();
-	 gen_test_log(time_used, argv[1], "gpu_baseline");
+	 gen_test_log_cpu(time_used, argv[1], "gpu_baseline", atoi(argv[2]));
 	 device_free();             //CPU free
 	 graph_free();              //GPU free
      //more free

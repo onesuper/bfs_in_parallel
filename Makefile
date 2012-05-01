@@ -10,7 +10,7 @@ CUFLAG1 = -lcuda -lcutil_x86_64 -L/home/liugu/NVIDIA_GPU_Computing_SDK/C/lib
 CUFLAG2 = -I/home/liugu/NVIDIA_GPU_Computing_SDK/C/common/inc -O3 -Xcompiler "-m32" -Xptxas -dlcm=cg -arch sm_20
 #**************************************
 
-all:	naive pthread 
+all:	naive pthread gpu
 naive:	naive/naive
 cpu:	cpu/baseline1/baseline1	cpu/baseline2/baseline2 cpu/conflict/conflict cpu/non-lock/non-lock cpu/rodinia/rodinia cpu/concurrent/concurrent cpu/concurrent2/concurrent2 cpu/concurrent3/concurrent3 cpu/bitmap/bitmap cpu/socket/socket cpu/sockets/sockets cpu/bitmap_while/bitmap_while
 gpu:	gpu/baseline/baseline
@@ -87,7 +87,7 @@ gpu/baseline/baseline: gpu/baseline/main.o
 
 
 gpu/baseline/main.o: gpu/baseline/main.cu
-	$(CC1) gpu/baseline/main.cu  $(CUFLAG2)  -c -o main.o 
+	$(CC1) gpu/baseline/main.cu  $(CUFLAG2)  -c -o gpu/baseline/main.o 
 
 
 

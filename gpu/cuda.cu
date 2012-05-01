@@ -10,6 +10,21 @@ for common use
 
 #include <stdio.h>
 #include <cuda_runtime.h>
+#include <cuda_runtime_api.h>
+#include <cutil.h>
+
+
+extern Node* d_node_list;
+extern Edge* d_edge_list;
+extern int* d_color;
+extern int* d_cost;
+extern int* d_counter;
+extern unsigned int* d_current_set_a;    
+extern unsigned int* d_current_set_b;
+extern int* d_current_set_size_new;
+extern unsigned int* current_set;
+extern int* current_set_size_new;
+
 
 bool init_cuda() 
 {
@@ -48,36 +63,28 @@ bool init_cuda()
 void device_alloc_and_copy(void) {
 
 	 cudaMalloc((void**) &d_node_list, sizeof(Node) * num_of_nodes);
-	 cudaMemcpy(d_nodes_list, node_list, sizeof(Node) * num_of_nodes,
-				cudaMemcpyHostToDevice);
+	 cudaMemcpy(d_node_list, node_list, sizeof(Node) * num_of_nodes, cudaMemcpyHostToDevice);
 
 	 cudaMalloc((void**) &d_edge_list, sizeof(Edge) * num_of_edges);
-	 cudaMemcopy(d_edge_list, edge_list. sizeof(Edge) * num_of_edges,
-				 cudaMemcpyHostToDevice);
+	 cudaMemcpy(d_edge_list, edge_list, sizeof(Edge) * num_of_edges, cudaMemcpyHostToDevice);
 
 	 cudaMalloc((void**) &d_color, sizeof(int) * num_of_nodes);
-	 cudaMemcopy(d_color, color, sizeof(int) * num_of_nodes,
-				 cudaMemcpyHostToDevice);
+	 cudaMemcpy(d_color, color, sizeof(int) * num_of_nodes, cudaMemcpyHostToDevice);
 
 	 cudaMalloc((void**) &d_cost, sizeof(int) * num_of_nodes);
-	 cudaMemcopy(d_cost, cost, sizeof(int) * num_of_nodes,
-				 cudaMemcpyHostToDevice);
+	 cudaMemcpy(d_cost, cost, sizeof(int) * num_of_nodes, cudaMemcpyHostToDevice);
 
 	 cudaMalloc((void**) &d_counter, sizeof(int) * MAX_LEVEL);
-	 cudaMemcopy(d_counter, counter, sizeof(int) * MAX_LEVEL,
-				 cudaMemcpyHostToDevice);
+	 cudaMemcpy(d_counter, counter, sizeof(int) * MAX_LEVEL, cudaMemcpyHostToDevice);
 
      cudaMalloc((void**) &d_current_set_a, sizeof(unsigned int) * num_of_nodes);
-     cudaMemcopy(d_current_set_a, current_set, sizeof(unsigned int) * num_of_nodes,
-                 cudaMemcpyHostToDevice);
+     cudaMemcpy(d_current_set_a, current_set, sizeof(unsigned int) * num_of_nodes, cudaMemcpyHostToDevice);
 
      cudaMalloc((void**) &d_current_set_b, sizeof(unsigned int) * num_of_nodes);
-     cudaMemcopy(d_current_set_b, current_set, sizeof(unsigned int) * num_of_nodes,
-                 cudaMemcpyHostToDevice);
+     cudaMemcpy(d_current_set_b, current_set, sizeof(unsigned int) * num_of_nodes, cudaMemcpyHostToDevice);
 
      cudaMalloc((void**) &d_current_set_size_new, sizeof(int) * 1);
-     cudaMemcopy(d_current_set_size_new, current_set_size, sizeof(int) * 1,
-                 cudaMemcpyHostToDevice);
+     cudaMemcpy(d_current_set_size_new, current_set_size_new, sizeof(int) * 1, cudaMemcpyHostToDevice);
 
 	 return; 
 }
