@@ -1,11 +1,11 @@
 import string
 
 
-file = open('4.out')
+file = open('3.out')
 
-file2 = open('4.dat','w')
+file2 = open('3.dat','w')
 
-file1 = open('4.naive')
+file1 = open('3.naive')
 org =file1.readlines()
 
 for one in org:

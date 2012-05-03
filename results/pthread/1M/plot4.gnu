@@ -13,7 +13,7 @@ set ytics 200
 set yrange [0:1200]
 set ylabel "Elapsed Time (ms)"
 set xlabel "Number of Threads"
-set title "Exploration on Small-world Graph(1M, 6) on Multi-core Proccessors"
+set title "Exploration on Small-world Graph(SW1) on Multi-core Proccessors"
 
 
 plot '4.indoor' using 2 t "Serial BFS", '' using 3 t "Rodinia", '' using 4 t "Baseline", '' using 5 t "With Bitmap", '' using 6 t "With Bitmap, Batch", '' using 7 t "With Bitmap, Batch, Read Check", '' using 8:xtic(1) t "With Bitmap, Batch, Read Check, Channel"

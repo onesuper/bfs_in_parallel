@@ -13,7 +13,7 @@ set ytics 1000
 set yrange [0:4500]
 set ylabel "Elapsed Time (ms)"
 set xlabel "Number of Threads"
-set title "Exploration on Irregular Graph(1M, 7) on Multi-core Proccessors"
+set title "Exploration on Irregular Graph(IRGL1) on Multi-core Proccessors"
 
 
 plot '2.indoor' using 2 t "Serial BFS", '' using 3 t "Rodinia", '' using 4 t "Baseline", '' using 5 t "With Bitmap", '' using 6 t "With Bitmap, Batch", '' using 7 t "With Bitmap, Batch, Read Check", '' using 8:xtic(1) t "With Bitmap, Batch, Read Check, Channel"

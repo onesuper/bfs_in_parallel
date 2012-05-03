@@ -13,7 +13,7 @@ CUFLAG2 = -I/home/liugu/NVIDIA_GPU_Computing_SDK/C/common/inc -O3 -Xcompiler "-m
 all:	naive pthread gpu
 naive:	naive/naive
 cpu:	cpu/baseline1/baseline1	cpu/baseline2/baseline2 cpu/conflict/conflict cpu/non-lock/non-lock cpu/rodinia/rodinia cpu/concurrent/concurrent cpu/concurrent2/concurrent2 cpu/concurrent3/concurrent3 cpu/bitmap/bitmap cpu/socket/socket cpu/sockets/sockets cpu/bitmap_while/bitmap_while
-gpu:	gpu/baseline/baseline
+gpu:	gpu/baseline/baseline gpu/batch/batch gpu/readcheck/readcheck
 pthread: pthread/baseline/baseline pthread/bitmap/bitmap pthread/batch/batch pthread/check/check pthread/channel/channel
 
 
@@ -89,6 +89,20 @@ gpu/baseline/baseline: gpu/baseline/main.o
 gpu/baseline/main.o: gpu/baseline/main.cu
 	$(CC1) gpu/baseline/main.cu  $(CUFLAG2)  -c -o gpu/baseline/main.o 
 
+
+gpu/batch/batch: gpu/batch/main.o
+	$(CC1) -o gpu/batch/batch gpu/batch/main.o $(CUFLAG1)
+
+
+gpu/batch/main.o: gpu/batch/main.cu
+	$(CC1) gpu/batch/main.cu  $(CUFLAG2)  -c -o gpu/batch/main.o 
+
+gpu/readcheck/readcheck: gpu/readcheck/main.o
+	$(CC1) -o gpu/readcheck/readcheck gpu/readcheck/main.o $(CUFLAG1)
+
+
+gpu/readcheck/main.o: gpu/readcheck/main.cu
+	$(CC1) gpu/readcheck/main.cu  $(CUFLAG2)  -c -o gpu/readcheck/main.o 
 
 
 
