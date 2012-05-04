@@ -65,19 +65,19 @@ cpu/bitmap_while/bitmap_while: cpu/bitmap_while/main.cpp
 
 # pthread
 pthread/baseline/baseline: pthread/baseline/main.cpp
-	$(CC0) pthread/baseline/main.cpp -o pthread/baseline/baseline -Wall $(PTHREAD) $(TBB)
+	$(CC0) pthread/baseline/main.cpp -o pthread/baseline/baseline -Wall $(PTHREAD) 
 
 pthread/bitmap/bitmap: pthread/bitmap/main.cpp
-	$(CC0) pthread/bitmap/main.cpp -o pthread/bitmap/bitmap -Wall $(PTHREAD) $(TBB)
+	$(CC0) pthread/bitmap/main.cpp -o pthread/bitmap/bitmap -Wall $(PTHREAD) 
 
 pthread/batch/batch: pthread/batch/main.cpp
-	$(CC0) pthread/batch/main.cpp -o pthread/batch/batch -Wall $(PTHREAD) $(TBB)
+	$(CC0) pthread/batch/main.cpp -o pthread/batch/batch -Wall $(PTHREAD) 
 
 pthread/check/check: pthread/check/main.cpp
-	$(CC0) pthread/check/main.cpp -o pthread/check/check -Wall $(PTHREAD) $(TBB)
+	$(CC0) pthread/check/main.cpp -o pthread/check/check -Wall $(PTHREAD)
 
 pthread/channel/channel: pthread/channel/main.cpp
-	$(CC0) pthread/channel/main.cpp -o pthread/channel/channel -Wall $(PTHREAD) $(TBB)
+	$(CC0) pthread/channel/main.cpp -o pthread/channel/channel -Wall $(PTHREAD)
 
 
 

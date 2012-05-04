@@ -1,0 +1,15 @@
+in two sockets
+
+pthread_baseline	../../test_case/regular/RGL1	1048576	6283266	1023	0.243801	2
+pthread_baseline	../../test_case/irregular/IRGL1	1049600	8380418	1024	0.219951	2
+pthread_baseline	../../test_case/real_graph/BAY	321270	800172	522	0.059244	2
+pthread_baseline	../../test_case/small_world/SW1	1000000	5999996	10	0.340441	2
+
+
+
+
+in one socket
+pthread_baseline	../../test_case/regular/RGL1	1048576	6283266	1023	0.199380	2
+pthread_baseline	../../test_case/irregular/IRGL1	1049600	8380418	1024	0.159785	2
+pthread_baseline	../../test_case/real_graph/BAY	321270	800172	522	0.051164	2
+pthread_baseline	../../test_case/small_world/SW1	1000000	5999996	10	0.520296	2

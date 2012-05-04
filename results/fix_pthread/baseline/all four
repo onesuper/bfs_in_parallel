@@ -1,0 +1,8 @@
+
+
+
+pthread_baseline	../../test_case/small_world/SW1	1000000	5999996	10	0.497105	1
+pthread_baseline	../../test_case/small_world/SW1	1000000	5999996	10	0.503877	2
+pthread_baseline	../../test_case/small_world/SW1	1000000	5999996	10	0.502483	4
+pthread_baseline	../../test_case/small_world/SW1	1000000	5999996	10	0.324763	8
+pthread_baseline	../../test_case/small_world/SW1	1000000	5999996	10	0.223879	16

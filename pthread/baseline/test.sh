@@ -13,12 +13,12 @@ do
 #./baseline ../../test_case/regular/RGL2 $i
 #./baseline ../../test_case/regular/RGL3 $i
 #./baseline ../../test_case/regular/RGL4 $i
-./baseline ../../test_case/regular/RGL5 $i
+#./baseline ../../test_case/regular/RGL5 $i
 #./baseline ../../test_case/regular/RGL6 $i
 #./baseline ../../test_case/regular/RGL7 $i
 #./baseline ../../test_case/regular/RGL8 $i
 #./baseline ../../test_case/regular/RGL9 $i
-#./baseline ../../test_case/regular/RGL10 $i
+./baseline ../../test_case/regular/RGL10 $i
 
 
 # irregular
@@ -26,12 +26,12 @@ do
 #./baseline ../../test_case/irregular/IRGL2 $i
 #./baseline ../../test_case/irregular/IRGL3 $i
 #./baseline ../../test_case/irregular/IRGL4 $i
-./baseline ../../test_case/irregular/IRGL5 $i
+#./baseline ../../test_case/irregular/IRGL5 $i
 #./baseline ../../test_case/irregular/IRGL6 $i
 #./baseline ../../test_case/irregular/IRGL7 $i
 #./baseline ../../test_case/irregular/IRGL8 $i
 #./baseline ../../test_case/irregular/IRGL9 $i
-#./baseline ../../test_case/irregular/IRGL10 $i
+./baseline ../../test_case/irregular/IRGL10 $i
 
 
 
@@ -40,14 +40,14 @@ do
 #./baseline ../../test_case/real_graph/NY $i
 #./baseline ../../test_case/real_graph/COL $i
 #./baseline ../../test_case/real_graph/FLA $i
-./baseline ../../test_case/real_graph/CAL $i
+#./baseline ../../test_case/real_graph/CAL $i
 #./baseline ../../test_case/real_graph/NE $i
 #./baseline ../../test_case/real_graph/NW $i
 #./baseline ../../test_case/real_graph/LKS $i
 #./baseline ../../test_case/real_graph/E $i
 #./baseline ../../test_case/real_graph/W $i
 #./baseline ../../test_case/real_graph/CTR $i
-#./baseline ../../test_case/real_graph/USA $i
+./baseline ../../test_case/real_graph/USA $i
 
 
 # small world
@@ -56,7 +56,7 @@ do
 #./baseline ../../test_case/small_world/SW2 $i
 #./baseline ../../test_case/small_world/SW3 $i
 #./baseline ../../test_case/small_world/SW4 $i
-./baseline ../../test_case/small_world/SW5 $i
+#./baseline ../../test_case/small_world/SW5 $i
 #./baseline ../../test_case/small_world/SW6 $i
 #./baseline ../../test_case/small_world/SW7 $i
 #./baseline ../../test_case/small_world/SW8 $i
