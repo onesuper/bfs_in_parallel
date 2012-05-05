@@ -27,8 +27,8 @@ int current_b_size;
 pthread_barrier_t barr;
 pthread_barrier_t barr2;
 
-int list[16] = {0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3};
-
+//int list[16] = {0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3};
+int list[16] = {0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3};
 
 void* thread_func(void*) {
      pthread_t thread_id = pthread_self();

@@ -23,6 +23,6 @@ set key outside center bottom horizontal Left reverse
 
 plot newhistogram "RGL10",  '1' using 2 t  "Baseline", '' using 3:xtic(1) t "With Bitmap",'' using 4 t "With Bitmap, Batch",'' using 5 t "With Bitmap, Batch, Read Check",\
 newhistogram "IRGL10", '2' using 2 t "Baseline", '' using 3:xtic(1) t "With Bitmap",'' using 4 t "With Bitmap, Batch", '' using 5 t "With Bitmap, Batch, Read Check",\
- newhistogram "USA", '3' using 2 t "Baseline", '' using 3:xtic(1) t "With Bitmap",'' using 4 t "With Bitmap, Batch", '' using 5 t "With Bitmap, Batch, Read Check",\
+ newhistogram "USA", '3' using 2 t "Baseline", '' using 3:xtic(1) t "With Bitmap",'' using 4 t "With Bitmap, Batch", '' using 5 t "With Bitmap, Batch, Read Check", \
  newhistogram "SW10", '4' using 2 t "Baseline", '' using 3:xtic(1) t "With Bitmap", '' using 4 t "With Bitmap, Batch", '' using 5 t "With Bitmap, Batch, Read Check"
 

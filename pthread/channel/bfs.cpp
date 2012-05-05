@@ -9,7 +9,6 @@ two queues version
 
 #include <pthread.h>
 #include <stdio.h>
-#include <tbb/concurrent_queue.h>
 #include <sys/time.h>
 #include <stdlib.h>
 #include "syncbitops.h"
@@ -25,10 +24,14 @@ typedef struct pair_t {
 } PAIR;
 
 
-tbb::concurrent_queue<unsigned int> current_a[SOCKET_NUM_USED];
-tbb::concurrent_queue<unsigned int> current_b[SOCKET_NUM_USED];
-tbb::concurrent_queue<PAIR> socket_queue[SOCKET_NUM_USED];
 
+
+unsigned int* current_a[SOCKET_NUM_USED];
+unsigned int* current_b[SOCKET_NUM_USED];
+PAIR* socket_queue[SOCKET_NUM_USED];
+int current_a_size[SOCKET_NUM_USED];
+int current_b_size[SOCKET_NUM_USED];
+int socket_queue_size[SOCKET_NUM_USED];
 
 unsigned long* bitmap[SOCKET_NUM_USED];
 
@@ -36,7 +39,7 @@ unsigned long* bitmap[SOCKET_NUM_USED];
 pthread_barrier_t barr;
 pthread_barrier_t barr2;
 
-//int list[16] = {0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3};
+
 
 int list[16] = {0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3};
 
@@ -50,271 +53,202 @@ void* thread_func(void*) {
      pthread_t thread_id = pthread_self();
      int socket_no = sched_getcpu();
      int k = 0;
-     std::queue<unsigned int> own_queue;
+     unsigned int *local_queue = (unsigned int*) malloc(sizeof(unsigned int)*num_of_nodes);
+     PAIR* socket_batch[SOCKET_NUM_USED];
+     int socket_batch_size[SOCKET_NUM_USED];
+     for (int i=0; i<SOCKET_NUM_USED; i++) {
+          socket_batch[i] = (PAIR*) malloc(sizeof(PAIR)*num_of_nodes);
+          socket_batch_size[i] = 0;
+     }
+     int local_queue_size = 0;
      
-#ifdef DEBUG
-     printf("I'm in socket %d\n", socket_no);
-#endif
+
 
      while(1) {
           if (k%2 ==0) {
-               while (current_a[socket_no].unsafe_size()) {
-                    unsigned int index;
-                    if (current_a[socket_no].try_pop(index)) {
+               while (current_a_size[socket_no] > 0) {
+                    
+                    int read_pos = __sync_sub_and_fetch(&current_a_size[socket_no], 1);
 
-
-#ifdef DEBUG
-                         printf("%lu: %d is out\n", thread_id, index);
-#endif
-
+                    if (read_pos >= 0) {
+                         
+                         unsigned int index = current_a[socket_no][read_pos];
                          Node cur_node = node_list[index];
                          for (int i = cur_node.start; i < (cur_node.start+cur_node.edge_num); i++) {
                               unsigned int id = edge_list[i].dest;
-
-
-#ifdef DEBUG
-                              printf("%lu: forward looking at %d\n", thread_id, id);
-#endif
-
                               int it_belongs_to = determine_socket(id);
                               if (socket_no == it_belongs_to) {
                                    if (!test_bit(id/SOCKET_NUM_USED, bitmap[socket_no])) {
                                         int its_color = sync_test_and_set_bit(id/SOCKET_NUM_USED, bitmap[socket_no]);
                                         if (!its_color) {
                                              cost[id] = cost[index] + 1;
-
-#ifdef DEBUG
-                                             printf("%lu: forward visiting %d\n", thread_id, id);  
-#endif
-
-
-                                             own_queue.push(id);
+                                             local_queue[local_queue_size] = id;
+                                             local_queue_size += 1;
                                         }
                                    }
-                                        
                               } else {
                                    PAIR pair;
                                    pair.first = id;
                                    pair.second = index;
-                                   socket_queue[it_belongs_to].push(pair);
-#ifdef DEBUG
-                                   printf("%lu: forward to %d\n", thread_id, it_belongs_to);
-#endif
+                                   
+                                   //int write_pos = __sync_fetch_and_add(&socket_queue_size[it_belongs_to], 1);
+                                   //socket_queue[it_belongs_to][write_pos] = pair;
+                                   socket_batch[it_belongs_to][socket_batch_size[it_belongs_to]] = pair;
+                                   socket_batch_size[it_belongs_to] += 1;
+
                               }                     
                          }
+                    } else {
+                          __sync_fetch_and_add(&current_a_size[socket_no], 1);
                     }
                }
 
-               while(!own_queue.empty()) {
-                    unsigned int index = own_queue.front();
-                    own_queue.pop();
-                    current_b[socket_no].push(index);
-#ifdef DEBUG
-                    printf("%lu: forward push %d\n", thread_id, index);
-#endif
-
+               if (local_queue_size) {
+                    int write_pos = __sync_fetch_and_add(&current_b_size[socket_no], local_queue_size);
+                    for (int i =0; i<local_queue_size; i++) {
+                         current_b[socket_no][write_pos+i] = local_queue[i];
+                    }
+                    local_queue_size = 0;
                    
                }
+               for (int i=0; i<SOCKET_NUM_USED; i++) {
+                    if (socket_batch_size[i] > 0) {
+                         int write_pos = __sync_fetch_and_add(&socket_queue_size[i], socket_batch_size[i]);
+                         for (int j=0; j<socket_batch_size[i]; j++) {
+                              socket_queue[i][write_pos+j] = socket_batch[i][j];
+                         }
+                         socket_batch_size[i] = 0;
+                    }
+               }
 
-#ifdef DEBUG               
-               printf("%lu:going to wait @lock1 in %d\n",thread_id, k);
-#endif
+
                pthread_barrier_wait(&barr);
-#ifdef DEBUG
-               printf("%lu:recovering @lock1 in %d\n",thread_id, k);
-#endif
 
-               while (socket_queue[socket_no].unsafe_size()) {
+
+               while (socket_queue_size[socket_no] > 0) {
                     PAIR pair;
-                    if (socket_queue[socket_no].try_pop(pair)) {
+                    int read_pos = __sync_sub_and_fetch(&socket_queue_size[socket_no], 1);
+                    if (read_pos >= 0) {
+                         pair = socket_queue[socket_no][read_pos];
                          unsigned int index = pair.second;
                          unsigned int id = pair.first;
-
-#ifdef DEBUG
-                         printf("%lu: cleaner looking at %d\n", thread_id, id);
-#endif
-
                          if (!test_bit(id/SOCKET_NUM_USED, bitmap[socket_no])) {
                               int its_color = sync_test_and_set_bit(id/SOCKET_NUM_USED, bitmap[socket_no]);
                               if (!its_color) {
                                    cost[id] = cost[index] + 1;
-                                   
-
-#ifdef DEBUG
-                                   printf("%lu: cleaner visiting %d\n", thread_id, id);  
-#endif
-
-                                   own_queue.push(id);
+                                   local_queue[local_queue_size] = id;
+                                   local_queue_size += 1;
                               }
                          }
-                    } 
+                    } else {
+                         __sync_fetch_and_add(&socket_queue_size[socket_no], 1);
+                    }
                }
 
-               while(!own_queue.empty()) {
-                    unsigned int index = own_queue.front();
-                    own_queue.pop();
-                    current_b[socket_no].push(index);
-
-#ifdef DEBUG
-                    printf("%lu: cleaner push %d\n", thread_id, index);
-#endif
+               if (local_queue_size) { //batch to next current
+                    int write_pos = __sync_fetch_and_add(&current_b_size[socket_no], local_queue_size);
+                    for (int i =0; i<local_queue_size; i++) {
+                         current_b[socket_no][write_pos+i] = local_queue[i];
+                    }
+                    local_queue_size = 0;
                }
-               
-#ifdef DEBUG               
-               printf("%lu:going to wait @lock2 in %d\n",thread_id, k);
-#endif
+
                pthread_barrier_wait(&barr);
-#ifdef DEBUG
-               printf("%lu:recovering @lock2 in %d\n",thread_id, k);
-#endif
-
-
-
-               if (current_b[0].empty()) break;
-
-
-
-#ifdef DEBUG               
-               printf("%lu:going to wait @lock3 in %d\n",thread_id, k);
-#endif
+               if (current_b_size[0] == 0  ) break;
                pthread_barrier_wait(&barr2);
-
-#ifdef DEBUG
-               printf("%lu:recovering @lock3 in %d\n",thread_id, k);
-#endif
 
 
           } else {
 
+               while (current_b_size[socket_no] > 0) {
+                    
+                    int read_pos = __sync_sub_and_fetch(&current_b_size[socket_no], 1);
+                    if (read_pos >= 0) {
 
-               while (current_b[socket_no].unsafe_size()) {
-                    unsigned int index;
-                    if (current_b[socket_no].try_pop(index)) {
-
-
-#ifdef DEBUG
-                         printf("%lu: %d is out\n", thread_id, index);
-#endif
-
+                         unsigned int index = current_b[socket_no][read_pos];
                          Node cur_node = node_list[index];
                          for (int i = cur_node.start; i < (cur_node.start+cur_node.edge_num); i++) {
                               unsigned int id = edge_list[i].dest;
-
-
-#ifdef DEBUG
-                              printf("%lu: forward looking at %d\n", thread_id, id);
-#endif
-
-                              
                               int it_belongs_to = determine_socket(id);
-                              if (socket_no == it_belongs_to) { 
+                              if (socket_no == it_belongs_to) {
                                    if (!test_bit(id/SOCKET_NUM_USED, bitmap[socket_no])) {
                                         int its_color = sync_test_and_set_bit(id/SOCKET_NUM_USED, bitmap[socket_no]);
                                         if (!its_color) {
                                              cost[id] = cost[index] + 1;
-
-#ifdef DEBUG
-                                             printf("%lu: forward visiting %d\n", thread_id, id);  
-#endif
-
-
-                                             own_queue.push(id);
+                                             local_queue[local_queue_size] = id;
+                                             local_queue_size += 1;
                                         }
                                    }
-                                   
                               } else {
                                    PAIR pair;
                                    pair.first = id;
                                    pair.second = index;
-                                   socket_queue[it_belongs_to].push(pair);
+                                   //int write_pos = __sync_fetch_and_add(&socket_queue_size[it_belongs_to], 1);
+                                   //socket_queue[it_belongs_to][write_pos] = pair;
+                                   socket_batch[it_belongs_to][socket_batch_size[it_belongs_to]] = pair;
+                                   socket_batch_size[it_belongs_to] += 1;
 
-#ifdef DEBUG
-                                   printf("%lu: forward to %d\n", thread_id, it_belongs_to);
-#endif
-
-                              }
-                              
-                           
+                              }                     
                          }
+                    } else {
+                         __sync_fetch_and_add(&current_b_size[socket_no], 1);
                     }
                }
 
-               while(!own_queue.empty()) {
-                    unsigned int index = own_queue.front();
-                    own_queue.pop();
-                    current_a[socket_no].push(index);
-#ifdef DEBUG
-                    printf("%lu: forward push %d\n", thread_id, index);
-#endif
-
+               if (local_queue_size) {
+                    int write_pos = __sync_fetch_and_add(&current_a_size[socket_no], local_queue_size);
+                    for (int i =0; i<local_queue_size; i++) {
+                         current_a[socket_no][write_pos+i] = local_queue[i];
+                    }
+                    local_queue_size = 0;
                    
                }
+               for (int i=0; i<SOCKET_NUM_USED; i++) {
+                    if (socket_batch_size[i] > 0) {
+                         int write_pos = __sync_fetch_and_add(&socket_queue_size[i], socket_batch_size[i]);
+                         for (int j=0; j<socket_batch_size[i]; j++) {
+                              socket_queue[i][write_pos+j] = socket_batch[i][j];
+                         }
+                         socket_batch_size[i] = 0;
+                    }
+               }
 
-#ifdef DEBUG               
-               printf("%lu:going to wait @lock1 in %d\n",thread_id, k);
-#endif
+
                pthread_barrier_wait(&barr);
-#ifdef DEBUG
-               printf("%lu:recovering @lock1 in %d\n",thread_id, k);
-#endif
 
-               while (socket_queue[socket_no].unsafe_size()) {
+
+               while (socket_queue_size[socket_no] > 0) {
                     PAIR pair;
-                    if (socket_queue[socket_no].try_pop(pair)) {
+                    int read_pos = __sync_sub_and_fetch(&socket_queue_size[socket_no], 1);
+                    if (read_pos >= 0) {
+                         pair = socket_queue[socket_no][read_pos];
                          unsigned int index = pair.second;
                          unsigned int id = pair.first;
-
-#ifdef DEBUG
-                         printf("%lu: cleaner looking at %d\n", thread_id, id);
-#endif
-
                          if (!test_bit(id/SOCKET_NUM_USED, bitmap[socket_no])) {
                               int its_color = sync_test_and_set_bit(id/SOCKET_NUM_USED, bitmap[socket_no]);
                               if (!its_color) {
                                    cost[id] = cost[index] + 1;
-                                   
-
-#ifdef DEBUG
-                                   printf("%lu: cleaner visiting %d\n", thread_id, id);  
-#endif
-
-                                   own_queue.push(id);
+                                   local_queue[local_queue_size] = id;
+                                   local_queue_size += 1;
                               }
                          }
-                    } 
+                    } else {
+                         __sync_fetch_and_add(&socket_queue_size[socket_no], 1);
+                    }
                }
 
-               while(!own_queue.empty()) {
-                    unsigned int index = own_queue.front();
-                    own_queue.pop();
-                    current_a[socket_no].push(index);
-
-#ifdef DEBUG
-                    printf("%lu: cleaner push %d\n", thread_id, index);
-#endif
+               if (local_queue_size) { //batch to next current
+                    int write_pos = __sync_fetch_and_add(&current_a_size[socket_no], local_queue_size);
+                    for (int i =0; i<local_queue_size; i++) {
+                         current_a[socket_no][write_pos+i] = local_queue[i];
+                    }
+                    local_queue_size = 0;
                }
-               
-#ifdef DEBUG               
-               printf("%lu:going to wait @lock2 in %d\n",thread_id, k);
-#endif
+
                pthread_barrier_wait(&barr);
-#ifdef DEBUG
-               printf("%lu:recovering @lock2 in %d\n",thread_id, k);
-#endif
-
-
-               if (current_a[0].empty()) break;
-
-
-
-#ifdef DEBUG               
-               printf("%lu:going to wait @lock3 in %d\n",thread_id, k);
-#endif
+               if (current_a_size[0] == 0 ) break;
                pthread_barrier_wait(&barr2);
-#ifdef DEBUG
-               printf("%lu:recovering @lock3 in %d\n",thread_id, k);
-#endif
-             
+
           }
           k++;
      }
@@ -327,23 +261,39 @@ float bfs(int num_of_threads)
 	 struct timeval start, end;
 	 float time_used;
 
+  
      
+
 
      int map_size = num_of_nodes /(32*SOCKET_NUM_USED) + 1;
 
+
      for (int i=0; i<SOCKET_NUM_USED; i++) {
+          current_a[i] = (unsigned int*) malloc(sizeof(unsigned int)*num_of_nodes);
+          current_b[i] = (unsigned int*) malloc(sizeof(unsigned int)*num_of_nodes);
+          socket_queue[i] = (PAIR*) malloc(sizeof(PAIR)*num_of_nodes);
           bitmap[i] = (unsigned long*) malloc(sizeof(unsigned long)*map_size);
      }
-     
-     for (int i=0; i<SOCKET_NUM_USED; i++)
+
+
+
+     for (int i=0; i<SOCKET_NUM_USED; i++) 
           for (int j=0; j<map_size; j++)
                bitmap[i][j] = 0;
+
+
+     for (int i=0; i<SOCKET_NUM_USED; i++) {
+          current_a_size[i] = 0;
+          current_b_size[i] = 0;
+          socket_queue_size[i] = 0;
+     }
 
 
 	 gettimeofday(&start, 0);
 
      set_bit(source_node_no, bitmap[determine_socket(source_node_no)]);
-	 current_a[determine_socket(source_node_no)].push(source_node_no);
+	 current_a[determine_socket(source_node_no)][0] = source_node_no;
+     current_a_size[determine_socket(source_node_no)] = 1;
 	 cost[source_node_no] = 0;
 
 
@@ -397,6 +347,9 @@ float bfs(int num_of_threads)
 
      for (int i=0; i<SOCKET_NUM_USED; i++) {
           free(bitmap[i]);
+          free(current_a[i]);
+          free(current_b[i]);
+          free(socket_queue[i]);
      }
 
 	 return time_used;
