@@ -1,18 +1,9 @@
 
 
-
 ## Description
  
 
 These are some code pieces of my undergraduation research on breadth-first search in parrallel.
-
-
-Since BFS is a regular algorithm, which is a nightmare to the current cache model of computers, the commuication overhead between
-computing cores is a big problem. So it's meaningful to design an architecture-related algorithm and use some optimization
-techniques to accelerate the application.
-
-
-Through these works, I have another understanding on how to implement a scalable algorithm in different architectures. 
 
 
 
